@@ -1,15 +1,16 @@
 const tempBlocks = document.querySelectorAll('.temp-block');
-const temperatures = [25, 63, 25, 25, 52, 25,95]; // Example temperatures
-
+const temperatures = [25, 63, 25, 25, 52, 25,95,100,102,103,104]; // Example temperatures
+let degreeSymbol = '\u00B0';
 
 
 
 tempBlocks.forEach((block, index) => {
 
-  console.log("before",block);
+
   const temp = temperatures[index];
   console.log ("temp=",temp);
-  block.style.setProperty('title', 'hello');
+  block.setAttribute('title',`${temp}${degreeSymbol}F`);
+
 
   if (temp > 95) {
     block.style.setProperty('--temp-color', 'var(--temp-color-95plus)');   
@@ -27,10 +28,14 @@ tempBlocks.forEach((block, index) => {
     block.style.setProperty('--temp-color', 'var(--temp-color-41-50)');
   } else if (temp > 31) {
     block.style.setProperty('--temp-color', 'var(--temp-color-32-40)');
-  } else {
+  } else if (temp >-50) {
     block.style.setProperty('--temp-color', 'var(--temp-color-0-31)');
   }
-  console.log("after",block);
+  else{
+    block.style.setProperty('--temp-color', 'var(--temp-color-none)');
+    block.setAttribute('title',`none`);
+  }
+ 
 });
 
 

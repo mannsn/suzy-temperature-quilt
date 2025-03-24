@@ -1,28 +1,27 @@
 :root {
-    /* Define temperature color ranges */
-    --temp-color-95plus: #C04040; /* Harvest Red */
-    --temp-color-90-95: #FF00FF; /* Fuchsia */
-    --temp-color-80-89: #FF4500; /* Autumn Red */
-    --temp-color-70-79: #FFA500; /* Mango */
-    --temp-color-60-69: #FFD700; /* Sunshine */
-    --temp-color-50-59: #90EE90; /* Soft Green */
-    --temp-color-41-50: #32CD32; /* Cool Green */
-    --temp-color-32-40: #87CEEB; /* Blue Mint */
-    --temp-color-0-31: #800080; /* Purple */
-  }
-  
-  .quilt {
-    display: grid;
-    grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
-    gap: 5px; /* Space between blocks */
-    width: 960px; /* Adjust the grid width */
-  }
-  
-  .temp-block {
-    width: 100%; /* Block fills grid cell */
-    padding-top: 100%; /* Makes the block square */
-    background-color: var(--temp-color); /* Use dynamically assigned color */
-    border: 1px solid #ccc; /* Optional border for quilt effect */
+  /* Define temperature color ranges */
+  --temp-color-95plus: #c04040; /* Harvest Red */
+  --temp-color-90-95: #ff00ff; /* Fuchsia */
+  --temp-color-80-89: #ff4500; /* Autumn Red */
+  --temp-color-70-79: #ffa500; /* Mango */
+  --temp-color-60-69: #ffd700; /* Sunshine */
+  --temp-color-50-59: #90ee90; /* Soft Green */
+  --temp-color-41-50: #32cd32; /* Cool Green */
+  --temp-color-32-40: #87ceeb; /* Blue Mint */
+  --temp-color-0-31: #800080; /* Purple */
+  --temp-color-none: #d0d0d0; /*Gray*/
+}
 
-  }
-  
+.quilt {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
+  gap: 5px; /* Space between blocks */
+  width: 960px; /* Adjust the grid width */
+}
+
+.temp-block {
+  width: 100%; /* Block fills grid cell */
+  padding-top: 100%; /* Makes the block square */
+  background-color: var(--temp-color); /* Use dynamically assigned color */
+  border: 1px solid #ccc; /* Optional border for quilt effect */
+}
