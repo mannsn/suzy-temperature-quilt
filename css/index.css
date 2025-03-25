@@ -1,28 +1,118 @@
 :root {
-    /* Define temperature color ranges */
-    --temp-color-95plus: #C04040; /* Harvest Red */
-    --temp-color-90-95: #FF00FF; /* Fuchsia */
-    --temp-color-80-89: #FF4500; /* Autumn Red */
-    --temp-color-70-79: #FFA500; /* Mango */
-    --temp-color-60-69: #FFD700; /* Sunshine */
-    --temp-color-50-59: #90EE90; /* Soft Green */
-    --temp-color-41-50: #32CD32; /* Cool Green */
-    --temp-color-32-40: #87CEEB; /* Blue Mint */
-    --temp-color-0-31: #800080; /* Purple */
-  }
-  
-  .quilt {
-    display: grid;
-    grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
-    gap: 5px; /* Space between blocks */
-    width: 960px; /* Adjust the grid width */
-  }
-  
-  .temp-block {
-    width: 100%; /* Block fills grid cell */
-    padding-top: 100%; /* Makes the block square */
-    background-color: var(--temp-color); /* Use dynamically assigned color */
-    border: 1px solid #ccc; /* Optional border for quilt effect */
+  /* Define temperature color ranges */
+  --temp-color-95plus: #c04040; /* Harvest Red */
+  --temp-color-90-95: #ff00ff; /* Fuchsia */
+  --temp-color-80-89: #ff4500; /* Autumn Red */
+  --temp-color-70-79: #ffa500; /* Mango */
+  --temp-color-60-69: #ffd700; /* Sunshine */
+  --temp-color-50-59: #90ee90; /* Soft Green */
+  --temp-color-41-50: #32cd32; /* Cool Green */
+  --temp-color-32-40: #87ceeb; /* Blue Mint */
+  --temp-color-0-31: #800080; /* Purple */
+  --temp-color-none: #6f6866ff; /*Gray*/
 
-  }
-  
+  --ash-gray: #ccdad1ff;
+  --ash-gray-2: #9caea9ff;
+  --battleship-gray: #788585ff;
+  --dim-gray: #6f6866ff;
+  --van-dyke: #38302eff;
+  --textdark: #001845;
+}
+
+.quicksand-cdt {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+body {
+  background-color: var(--ash-gray);
+  color: var(--textdark);
+  font-family: "Quicksand";
+  font-size: 2vw;
+  padding-left: 1em;
+  padding-right: 1em;;
+ }
+
+h1 {
+  text-align: center;
+  color: blueviolet;
+  /*font-size:large;*/
+}
+
+h2 {
+  text-align: center;
+  color: blueviolet;
+  /*font-size:medium*/
+}
+p {
+  text-align: center;
+  /*font-size: medium;*/
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 75%;
+}
+
+label {
+  font-style: normal;
+  margin-right: 1em;
+  /*font-size:medium*/
+}
+
+section {
+  margin-top:2em;
+}
+
+#mainsection{
+  margin-top:0;
+}
+
+input[type="text"] {
+  align-items: center;
+  box-sizing: border-box;
+}
+
+input[type="radio"] {
+  accent-color: rgb(129, 83, 197) /* Changes the color of the radio button */
+}
+
+button {
+  border: none;
+  display: inline-block;
+  background-color: rgb(129, 83, 197);
+  color: #001845;
+  font-weight: bold;
+  text-align: center;
+  align-self: center;
+  max-width: 25%;
+  border-radius: 60%;
+  font-family: "Quicksand";
+  margin-top: 1em;
+}
+
+h3 {
+  font-style: italic;
+}
+
+form {
+  text-align: center;
+}
+
+.quilt {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
+  gap: .25em; /* Space between blocks */
+  max-width: 100%; /* Adjust the grid width */
+}
+
+.temp-block {
+  width: 100%; /* Block fills grid cell */
+  padding-top: 100%; /* Makes the block square */
+  background-color: var(--temp-color); /* Use dynamically assigned color */
+  border: 1px solid #121212; /* Optional border for quilt effect */
+}
