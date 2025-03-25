@@ -42,6 +42,9 @@ function displayBlocks(tempArray) {
     { name: "Gray", value: "#d0d0d0", gt: -999 },
   ];
 
+  const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const daysInMonthsLeapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  
   tempBlocks.forEach((block, index) => {
     let colorRangeIndex = 9;
     const temp = tempArray[index];
