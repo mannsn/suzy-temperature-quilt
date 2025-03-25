@@ -36,12 +36,26 @@
 
       <section id="formSection">
         <form id="quiltForm" name="quiltForm" autocomplete="on">
-          <label for="location">Enter a zip code </label>
+          <label for="latitude">Enter a latitude </label>
           <input
-            type="text"
-            name="location"
-            id="locationId"
+            type="number"
+            name="latitude"
+            id="latitude"
             required="true"
+            min="-90"
+            max="90"
+            step="0.0001"
+          />
+          <br />
+          <label for="longitude">Enter a longitude </label>
+          <input
+            type="number"
+            name="longitude"
+            id="longitude"
+            required="true"
+            min="-90"
+            max="90"
+            step="0.0001"
           />
           <br />
           <label for="year">Year</label>
@@ -50,7 +64,7 @@
             name="year"
             id="yearId"
             required="true"
-            min="1900"
+            min="1944"
             max="2024"
           />
           <br />

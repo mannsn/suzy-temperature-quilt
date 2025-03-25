@@ -1,5 +1,4 @@
-//Get the weather
-// Fetch Weather
+//Fetch the weather based on input url
 async function weatherAPI(weatherURL) {
   try {
     const response = await fetch(weatherURL);
@@ -15,14 +14,13 @@ async function weatherAPI(weatherURL) {
   }
 }
 
-async function getWeather() {
-  let weatherURL =
-    "https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&start_date=2024-01-01&end_date=2024-12-31&daily=temperature_2m_max&temperature_unit=fahrenheit";
-
+//Once the data is returned, display resulting blocks
+async function getWeather(weatherURL) {
   const weather = await weatherAPI(weatherURL);
-  console.log(weather.daily.temperature_2m_max);
   displayBlocks(weather.daily.temperature_2m_max);
 }
+
+//Divide the temperatures by months to add filler days
 function divideDaysByMonths(daysArray, daysInMonths, fillerDays) {
   const months = []; // Array to store divided months
   let startIndex = 0;
@@ -44,9 +42,10 @@ function divideDaysByMonths(daysArray, daysInMonths, fillerDays) {
   return months;
 }
 
+//Display resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
+//TODO: allow colorRanges to be input
 function displayBlocks(tempArray) {
   const tempBlocks = document.querySelectorAll(".temp-block");
-  //const temperatures = [25, 63, 25, 25, 52, 25, 95, 100, 102, 103, 104]; // Example temperatures
   let degreeSymbol = "\u00B0";
 
   const colorRanges = [
@@ -66,7 +65,7 @@ function displayBlocks(tempArray) {
   const daysInMonthsLeapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   const dividedMonths = divideDaysByMonths(tempArray, daysInMonths, 32);
-  console.log("divided Months", dividedMonths);
+  //console.log("divided Months", dividedMonths);
   const yearTemps = [
     ...dividedMonths[0],
     ...dividedMonths[1],
@@ -82,17 +81,17 @@ function displayBlocks(tempArray) {
     ...dividedMonths[11],
   ];
 
-  console.log("yearTemps", yearTemps);
+  //console.log("yearTemps", yearTemps);
   let dayNumber = 1;
 
+  //For each block, find matching temperature and set color plus title
   tempBlocks.forEach((block, index) => {
     let colorRangeIndex = 9;
 
     const temp = yearTemps[index];
-    console.log("temp=", temp, index);
+    //console.log("temp=", temp, index);
 
     if (temp > colorRanges[0].gt) {
-      block.style.setProperty("--temp-color", "var(`${colorRanges[0].value}`)");
       colorRangeIndex = 0;
     } else if (temp > colorRanges[1].gt) {
       colorRangeIndex = 1;
@@ -130,24 +129,57 @@ function displayBlocks(tempArray) {
   });
 }
 
+//Determine which radio button is selected - Farenheit(1) or Celsius(2)
+function getSelectedValue() {
+  const radioButtons = document.getElementsByName("option");
+  //console.log (radioButtons);
+  let selectedValue = null;
+
+  for (const radio of radioButtons) {
+    console.log(radio.checked);
+
+    if (radio.checked) {
+      selectedValue = radio.value;
+      return selectedValue;
+    }
+  }
+}
+
+//When form is submitted, get weather based on input and generate pattern
 function onFormSubmit(event) {
   event.preventDefault();
 
   const data = new FormData(event.target);
   console.log(data);
 
-  const location = data.get("location");
+  const latitude = data.get("latitude");
+  const longitude = data.get("longitude");
   const year = data.get("year");
 
-  console.log(location);
-  console.log(year);
+  let unit = "fahrenheit";
+  const buttonVal = getSelectedValue(); //1 = Farenheith 2=Celcius
+  if (buttonVal === "1") {
+    unit = "fahrenheit";
+  } else {
+    unit = "celsius";
+  }
 
-  getWeather();
+  console.log(longitude);
+  console.log(latitude);
+  console.log(year);
+  console.log(buttonVal);
+  console.log(unit);
+
+  let weatherURL = `https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&start_date=${year}-01-01&end_date=${year}-12-31&daily=temperature_2m_max&temperature_unit=${unit}`;
+  //https://archive-api.open-meteo.com/v1/archive?latitude=39.2884&longitude=-77.2039&start_date=2024-01-01&end_date=2024-12-31&daily=apparent_temperature_max&temperature_unit=fahrenheit
+  console.log(weatherURL);
+
+  getWeather(weatherURL);
 }
 
-//Main
+//Main - Setup
 
-//Find the leave messages form and add the callback for submit
+//Find the quilt form and add the callback for submit
 const messageForm = document.getElementById("quiltForm");
 console.log(messageForm);
 
