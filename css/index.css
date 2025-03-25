@@ -84,13 +84,13 @@ input[type="radio"] {
 button {
   border: none;
   display: inline-block;
-  background-color: rgb(129, 83, 197);
+  background-color: rgb(191, 187, 196);
   color: #001845;
   font-weight: bold;
   text-align: center;
   align-self: center;
-  max-width: 25%;
-  border-radius: 60%;
+  max-width: 30%;
+  border-radius: 30%;
   font-family: "Quicksand";
   margin-top: 1em;
 }

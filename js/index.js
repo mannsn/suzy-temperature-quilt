@@ -87,7 +87,7 @@ function displayBlocks(tempArray) {
 
   tempBlocks.forEach((block, index) => {
     let colorRangeIndex = 9;
-  
+
     const temp = yearTemps[index];
     console.log("temp=", temp, index);
 
@@ -130,5 +130,25 @@ function displayBlocks(tempArray) {
   });
 }
 
+function onFormSubmit(event) {
+  event.preventDefault();
+
+  const data = new FormData(event.target);
+  console.log(data);
+
+  const location = data.get("location");
+  const year = data.get("year");
+
+  console.log(location);
+  console.log(year);
+
+  getWeather();
+}
+
 //Main
-getWeather();
+
+//Find the leave messages form and add the callback for submit
+const messageForm = document.getElementById("quiltForm");
+console.log(messageForm);
+
+messageForm.addEventListener("submit", onFormSubmit);

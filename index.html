@@ -35,23 +35,35 @@
       />
 
       <section id="formSection">
-        <form id="yearFormId" name="location" autocomplete="on">
-          <label for="location">Location</label>
+        <form id="quiltForm" name="quiltForm" autocomplete="on">
+          <label for="location">Enter a zip code </label>
           <input
             type="text"
-            name="searchWord"
-            id="searchWordId"
+            name="location"
+            id="locationId"
             required="true"
+          />
+          <br />
+          <label for="year">Year</label>
+          <input
+            type="number"
+            name="year"
+            id="yearId"
+            required="true"
+            min="1900"
+            max="2024"
           />
           <br />
 
           <label>
-            <input type="radio" name="option" value="1" id="Farenheit" />
+            <input type="radio" name="option" value="1" id="Farenheit" checked />
             Farenheit
           </label>
           <label>
             <input type="radio" name="option" value="2" id="Celsius" /> Celcius
           </label>
+          <br />
+          <button type="submit" class="submit-button">Generate Pattern</button>
         </form>
       </section>
     </section>
