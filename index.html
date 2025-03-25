@@ -29,7 +29,7 @@
 
       <img
         src="img/tempsquares.jpg"
-        alt="Suzy Mann headshot"
+        alt="Temperature crochet blocks"
         class="center_pic"
         id="profile-picture"
       />
@@ -58,13 +58,13 @@
             step="0.0001"
           />
           <br />
-          <label for="year">Year</label>
+          <label for="year">Year (2022-2024)</label>
           <input
             type="number"
             name="year"
             id="yearId"
             required="true"
-            min="1944"
+            min="2022"
             max="2024"
           />
           <br />
@@ -74,9 +74,29 @@
             Farenheit
           </label>
           <label>
-            <input type="radio" name="option" value="2" id="Celsius" /> Celcius
+            <input type="radio" name="option" value="2" id="Celsius" /> Celsius
           </label>
           <br />
+
+          <label>
+            <input type="radio" name="option1" value="1" id="High" checked />
+            High
+          </label>
+          <label>
+            <input type="radio" name="option1" value="2" id="Low" /> Low
+          </label>
+          <br />
+
+          
+          <label>
+            <input type="radio" name="option2" value="1" id="filler" checked />
+            Monthly Filler
+          </label>
+          <label>
+            <input type="radio" name="option2" value="2" id="noFiller" /> No Monthly Filler
+          </label>
+          <br />
+
           <button type="submit" class="submit-button">Generate Pattern</button>
         </form>
       </section>

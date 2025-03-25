@@ -15,28 +15,36 @@ async function weatherAPI(weatherURL) {
 }
 
 //Once the data is returned, display resulting blocks
-async function getWeather(weatherURL) {
+async function getWeather(weatherURL, unit, year, hiOrLow, filler) {
   const weather = await weatherAPI(weatherURL);
-  displayBlocks(weather.daily.temperature_2m_max);
+  if (hiOrLow === "max"){
+    displayBlocks(weather.daily.temperature_2m_max, unit, year, filler);
+  }
+  else{
+    displayBlocks(weather.daily.temperature_2m_min, unit, year,filler);
+  }
 }
 
 //Divide the temperatures by months to add filler days
-function divideDaysByMonths(daysArray, daysInMonths, fillerDays) {
+function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
   const months = []; // Array to store divided months
   let startIndex = 0;
 
-  daysInMonths.forEach((daysInMonth) => {
-    const monthDays = daysArray.slice(startIndex, startIndex + daysInMonth);
-    fillerDays = daysInMonth;
+  console.log (daysArray);
+  console.log(numMonthDays)
+
+  numMonthDays.forEach((numMonthDays) => {
+    const monthDays = daysArray.slice(startIndex, startIndex + numMonthDays);
+    let fillerDays = numMonthDays;
 
     //Add in filler temperatures
-    while (32 - fillerDays > 0) {
+    while (fillerDaysIn - fillerDays > 0) {
       monthDays.push(-99);
       fillerDays += 1;
     }
 
     months.push(monthDays);
-    startIndex += daysInMonth;
+    startIndex += numMonthDays;
   });
 
   return months;
@@ -44,7 +52,7 @@ function divideDaysByMonths(daysArray, daysInMonths, fillerDays) {
 
 //Display resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
-function displayBlocks(tempArray) {
+function displayBlocks(tempArray, unit, year,filler) {
   const tempBlocks = document.querySelectorAll(".temp-block");
   let degreeSymbol = "\u00B0";
 
@@ -61,10 +69,32 @@ function displayBlocks(tempArray) {
     { name: "Gray", value: "#d0d0d0", gt: -100 },
   ];
 
+  const colorRangesCelsius = [
+    { name: "Harvest Red", value: "#c04040", gt: 35 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
+    { name: "Autumn Red", value: "#ff4500", gt: 25 },
+    { name: "Mango", value: "#ffa500", gt: 20 },
+    { name: "Sunshine", value: "#ffd700", gt: 17 },
+    { name: "Soft Green", value: "#90ee90", gt: 15 },
+    { name: "Cool Green", value: "#32cd32", gt: 10 },
+    { name: "Blue Mint", value: "#87ceeb", gt: 0 },
+    { name: "Purple", value: "#800080", gt: -20 },
+    { name: "Gray", value: "#d0d0d0", gt: -100 },
+  ];
+
   const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const daysInMonthsLeapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let dividedMonths = [];
+  let padDays = 32;
+  if (filler === "no"){
+    padDays = 0;
+  }
+  if (year === "2020") {
+     dividedMonths = divideDaysByMonths(tempArray, daysInMonthsLeapYear, padDays);
+  } else {
+     dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
+  }
 
-  const dividedMonths = divideDaysByMonths(tempArray, daysInMonths, 32);
   //console.log("divided Months", dividedMonths);
   const yearTemps = [
     ...dividedMonths[0],
@@ -90,28 +120,52 @@ function displayBlocks(tempArray) {
 
     const temp = yearTemps[index];
     //console.log("temp=", temp, index);
-
-    if (temp > colorRanges[0].gt) {
-      colorRangeIndex = 0;
-    } else if (temp > colorRanges[1].gt) {
-      colorRangeIndex = 1;
-    } else if (temp > colorRanges[2].gt) {
-      colorRangeIndex = 2;
-    } else if (temp > colorRanges[3].gt) {
-      colorRangeIndex = 3;
-    } else if (temp > colorRanges[4].gt) {
-      colorRangeIndex = 4;
-    } else if (temp > colorRanges[5].gt) {
-      colorRangeIndex = 5;
-    } else if (temp > colorRanges[6].gt) {
-      colorRangeIndex = 6;
-    } else if (temp > colorRanges[7].gt) {
-      colorRangeIndex = 7;
-    } else if (temp > colorRanges[8].gt) {
-      colorRangeIndex = 8;
+    if (unit === "fahrenheit") {
+      if (temp > colorRanges[0].gt) {
+        colorRangeIndex = 0;
+      } else if (temp > colorRanges[1].gt) {
+        colorRangeIndex = 1;
+      } else if (temp > colorRanges[2].gt) {
+        colorRangeIndex = 2;
+      } else if (temp > colorRanges[3].gt) {
+        colorRangeIndex = 3;
+      } else if (temp > colorRanges[4].gt) {
+        colorRangeIndex = 4;
+      } else if (temp > colorRanges[5].gt) {
+        colorRangeIndex = 5;
+      } else if (temp > colorRanges[6].gt) {
+        colorRangeIndex = 6;
+      } else if (temp > colorRanges[7].gt) {
+        colorRangeIndex = 7;
+      } else if (temp > colorRanges[8].gt) {
+        colorRangeIndex = 8;
+      } else {
+        block.setAttribute("title", `none`);
+        colorRangeIndex = 9;
+      }
     } else {
-      block.setAttribute("title", `none`);
-      colorRangeIndex = 9;
+      if (temp > colorRangesCelsius[0].gt) {
+        colorRangeIndex = 0;
+      } else if (temp > colorRangesCelsius[1].gt) {
+        colorRangeIndex = 1;
+      } else if (temp > colorRangesCelsius[2].gt) {
+        colorRangeIndex = 2;
+      } else if (temp > colorRangesCelsius[3].gt) {
+        colorRangeIndex = 3;
+      } else if (temp > colorRangesCelsius[4].gt) {
+        colorRangeIndex = 4;
+      } else if (temp > colorRangesCelsius[5].gt) {
+        colorRangeIndex = 5;
+      } else if (temp > colorRangesCelsius[6].gt) {
+        colorRangeIndex = 6;
+      } else if (temp > colorRangesCelsius[7].gt) {
+        colorRangeIndex = 7;
+      } else if (temp > colorRangesCelsius[8].gt) {
+        colorRangeIndex = 8;
+      } else {
+        block.setAttribute("title", `none`);
+        colorRangeIndex = 9;
+      }
     }
 
     block.style.setProperty(
@@ -130,8 +184,8 @@ function displayBlocks(tempArray) {
 }
 
 //Determine which radio button is selected - Farenheit(1) or Celsius(2)
-function getSelectedValue() {
-  const radioButtons = document.getElementsByName("option");
+function getSelectedValue(buttonName) {
+  const radioButtons = document.getElementsByName(`${buttonName}`);
   //console.log (radioButtons);
   let selectedValue = null;
 
@@ -157,11 +211,27 @@ function onFormSubmit(event) {
   const year = data.get("year");
 
   let unit = "fahrenheit";
-  const buttonVal = getSelectedValue(); //1 = Farenheith 2=Celcius
+  const buttonVal = getSelectedValue("option"); //1 = Farenheit 2=Celcius
   if (buttonVal === "1") {
     unit = "fahrenheit";
   } else {
     unit = "celsius";
+  }
+
+  let hiOrLow = "max";
+  const buttonVal1 = getSelectedValue("option1"); //1 = High 2=Low
+  if (buttonVal1 === "1") {
+    hiOrLow = "max";
+  } else {
+    hiOrLow = "min";
+  }
+
+  let filler = "yes";
+  const buttonVal2 = getSelectedValue("option2"); //1 = Yes 2=No
+  if (buttonVal2 === "1") {
+    filler = "yes";
+  } else {
+    filler = "no";
   }
 
   console.log(longitude);
@@ -169,12 +239,20 @@ function onFormSubmit(event) {
   console.log(year);
   console.log(buttonVal);
   console.log(unit);
+  console.log(hiOrLow);
+  console.log(filler);
 
-  let weatherURL = `https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&start_date=${year}-01-01&end_date=${year}-12-31&daily=temperature_2m_max&temperature_unit=${unit}`;
-  //https://archive-api.open-meteo.com/v1/archive?latitude=39.2884&longitude=-77.2039&start_date=2024-01-01&end_date=2024-12-31&daily=apparent_temperature_max&temperature_unit=fahrenheit
+  //TODO allow low for the day to be selected
+  //TDOD  ranges don't work well for celcius
+
+  //Sample queries https://archive-api.open-meteo.com/v1/archive?latitude=39.2884&longitude=-77.2039&start_date=2024-01-01&end_date=2024-12-31&daily=apparent_temperature_max&temperature_unit=fahrenheit
+  //https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2021-01-01&end_date=2021-12-31&daily=temperature_2m_min&temperature_unit=fahrenheit
+
+  let weatherURL = `https://historical-forecast-api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&start_date=${year}-01-01&end_date=${year}-12-31&daily=temperature_2m_${hiOrLow}&temperature_unit=${unit}`;
+
   console.log(weatherURL);
 
-  getWeather(weatherURL);
+  getWeather(weatherURL, unit, year, hiOrLow, filler);
 }
 
 //Main - Setup
