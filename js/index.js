@@ -40,7 +40,8 @@ async function getWeather(
       unit,
       year,
       latitude,
-      longitudefiller
+      longitude,
+      filler
     );
   }
 }
