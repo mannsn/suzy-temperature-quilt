@@ -15,12 +15,12 @@ async function weatherAPI(weatherURL) {
 }
 
 //Once the data is returned, display resulting blocks
-async function getWeather(weatherURL, unit, year, hiOrLow, filler) {
+async function getWeather(weatherURL, unit, year, hiOrLow, latitude, longitude, filler) {
   const weather = await weatherAPI(weatherURL);
   if (hiOrLow === "max") {
-    displayBlocks(weather.daily.temperature_2m_max, unit, year, filler);
+    displayBlocks(weather.daily.temperature_2m_max, unit, year, latitude, longitude, filler);
   } else {
-    displayBlocks(weather.daily.temperature_2m_min, unit, year, filler);
+    displayBlocks(weather.daily.temperature_2m_min, unit, year, latitude, longitudefiller);
   }
 }
 
@@ -51,7 +51,7 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
 
 //Display resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
-function displayBlocks(tempArray, unit, year, filler) {
+function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
   const tempBlocks = document.querySelectorAll(".temp-block");
   let degreeSymbol = "\u00B0";
 
@@ -149,11 +149,12 @@ function displayBlocks(tempArray, unit, year, filler) {
       `${colorRanges[colorRangeIndex].value}`
     );
 
+    let titleUnit = unit === "fahrenheit" ? "F" : "C";
     //Set the title
     if (colorRangeIndex < 9) {
       block.setAttribute(
         "title",
-        `Day ${dayNumber} ${temp}${degreeSymbol}F ${colorRanges[colorRangeIndex].name}`
+        `Day ${dayNumber} ${temp}${degreeSymbol}${titleUnit} ${colorRanges[colorRangeIndex].name}`
       );
       dayNumber = ++dayNumber;
     }
@@ -161,6 +162,11 @@ function displayBlocks(tempArray, unit, year, filler) {
     //Hide textcontent in case it was there from previous print
     block.textContent = "";
   });
+    //Add a title
+    const quiltTitle = document.getElementById("quiltTitle");
+    console.log (quiltTitle);
+    
+    quiltTitle.textContent=`Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
 }
 
 //Determine which radio button is selected - Farenheit(1) or Celsius(2)
@@ -232,7 +238,7 @@ function onFormSubmit(event) {
 
   console.log(weatherURL);
 
-  getWeather(weatherURL, unit, year, hiOrLow, filler);
+  getWeather(weatherURL, unit, year, hiOrLow, latitude, longitude, filler);
 }
 
 function onPrtSubmit(event) {

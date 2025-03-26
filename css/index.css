@@ -38,7 +38,6 @@ body {
 h1 {
   text-align: center;
   color: blueviolet;
-  /*font-size:large;*/
 }
 
 h2 {
@@ -83,11 +82,11 @@ section {
   margin-top: 0;
 }
 
-
-input[type="text"], label {
+input[type="text"],
+label {
   text-align: center; /* Centers text inside the input box */
   margin-top: 2em;
-  }
+}
 
 input[type="radio"] {
   accent-color: rgb(129, 83, 197); /* Changes the color of the radio button */
@@ -127,6 +126,7 @@ form {
   grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
   gap: 0.25em; /* Space between blocks */
   max-width: 100%; /* Adjust the grid width */
+  margin-top: 1em;
 }
 
 .temp-block {
