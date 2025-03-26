@@ -138,6 +138,7 @@ function displayBlocks(tempArray, unit, year, filler) {
       }
     }
 
+  
     // If no range matches, set the title attribute to "none"
     if (colorRangeIndex === 9) {
       block.setAttribute("title", "none");
@@ -157,6 +158,9 @@ function displayBlocks(tempArray, unit, year, filler) {
       );
       dayNumber = ++dayNumber;
     }
+
+    //Hide textcontent in case it was there from previous print
+    block.textContent ="";
   });
 }
 
@@ -232,6 +236,24 @@ function onFormSubmit(event) {
   getWeather(weatherURL, unit, year, hiOrLow, filler);
 }
 
+function onPrtSubmit(event) {
+  event.preventDefault();
+
+  // Select the temp-block element
+  const tempBlocks = document.querySelectorAll(".temp-block");
+
+  tempBlocks.forEach((block, index) => {
+    // Get the title attribute value
+    const title = block.getAttribute("title");
+
+    // Print the title to the console
+    console.log(title);
+
+    // Add the title as content inside the temp-block
+    block.textContent = title;
+  });
+}
+
 //Main - Setup
 
 //Find the quilt form and add the callback for submit
@@ -239,3 +261,6 @@ const messageForm = document.getElementById("quiltForm");
 console.log(messageForm);
 
 messageForm.addEventListener("submit", onFormSubmit);
+
+const print = document.getElementById("prtForm");
+print.addEventListener("submit", onPrtSubmit);

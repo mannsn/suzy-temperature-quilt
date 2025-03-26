@@ -86,9 +86,11 @@ button {
   background-color: rgb(191, 187, 196);
   color: #001845;
   font-weight: bold;
-  max-width: 30%;
-  border-radius: 30%;  
+  max-width: 40%;
+  border-radius: 40%;  
   margin-top: 1em;
+  font-size: 1em;
+ 
   }
 
 h3 {
@@ -124,6 +126,4 @@ form {
   border: 1px solid #121212; /* Optional border for quilt effect */
 
 }
-#prntContainer{
-  text-align:center;
-}
+
