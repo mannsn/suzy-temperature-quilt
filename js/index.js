@@ -15,12 +15,33 @@ async function weatherAPI(weatherURL) {
 }
 
 //Once the data is returned, display resulting blocks
-async function getWeather(weatherURL, unit, year, hiOrLow, latitude, longitude, filler) {
+async function getWeather(
+  weatherURL,
+  unit,
+  year,
+  hiOrLow,
+  latitude,
+  longitude,
+  filler
+) {
   const weather = await weatherAPI(weatherURL);
   if (hiOrLow === "max") {
-    displayBlocks(weather.daily.temperature_2m_max, unit, year, latitude, longitude, filler);
+    displayBlocks(
+      weather.daily.temperature_2m_max,
+      unit,
+      year,
+      latitude,
+      longitude,
+      filler
+    );
   } else {
-    displayBlocks(weather.daily.temperature_2m_min, unit, year, latitude, longitudefiller);
+    displayBlocks(
+      weather.daily.temperature_2m_min,
+      unit,
+      year,
+      latitude,
+      longitudefiller
+    );
   }
 }
 
@@ -140,7 +161,7 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
 
     // If no range matches, set the title attribute to "none"
     if (colorRangeIndex === 9) {
-      block.setAttribute("title", "none");
+      block.setAttribute("title", "");
     }
 
     //Set the color
@@ -149,12 +170,14 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
       `${colorRanges[colorRangeIndex].value}`
     );
 
+    //Get the correct unit for the title
     let titleUnit = unit === "fahrenheit" ? "F" : "C";
+
     //Set the title
     if (colorRangeIndex < 9) {
       block.setAttribute(
         "title",
-        `Day ${dayNumber} ${temp}${degreeSymbol}${titleUnit} ${colorRanges[colorRangeIndex].name}`
+        `${dayNumber}\n${temp}`
       );
       dayNumber = ++dayNumber;
     }
@@ -162,14 +185,15 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
     //Hide textcontent in case it was there from previous print
     block.textContent = "";
   });
-    //Add a title
-    const quiltTitle = document.getElementById("quiltTitle");
-    console.log (quiltTitle);
-    
-    quiltTitle.textContent=`Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+
+  //Add a header for the quilt pattrn
+  const quiltTitle = document.getElementById("quiltTitle");
+  console.log(quiltTitle);
+
+  quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
 }
 
-//Determine which radio button is selected - Farenheit(1) or Celsius(2)
+//Determine which radio button is selected given a button name
 function getSelectedValue(buttonName) {
   const radioButtons = document.getElementsByName(`${buttonName}`);
   //console.log (radioButtons);
@@ -238,9 +262,11 @@ function onFormSubmit(event) {
 
   console.log(weatherURL);
 
+  //Get the temperatures for the year and generate the quilt pattern
   getWeather(weatherURL, unit, year, hiOrLow, latitude, longitude, filler);
 }
 
+//Print the quilt pattern
 function onPrtSubmit(event) {
   event.preventDefault();
 
@@ -250,10 +276,6 @@ function onPrtSubmit(event) {
   tempBlocks.forEach((block, index) => {
     // Get the title attribute value
     const title = block.getAttribute("title");
-
-    // Print the title to the console
-    console.log(title);
-
     // Add the title as content inside the temp-block
     block.textContent = title;
   });

@@ -140,7 +140,32 @@ form {
   body {
     -webkit-print-color-adjust: exact; /* For WebKit-based browsers like Chrome */
     print-color-adjust: exact; /* For other modern browsers */
+    height: 100%;
+    width: 100%;
+    overflow: visible;
+    zoom: 100%;
   }
+
+  html,
+  wrapper,
+  div,
+  section {
+    height: 100%; /* Removes fixed heights */
+    width: 100%; /* Removes fixed widths */
+  }
+
+  @page {
+    margin: 0;
+  }
+
+  .quilt {
+    display: grid;
+    grid-template-columns: repeat(16, 120px); /* 16 blocks per row */
+    gap: 0; /* Space between blocks */
+    max-width: 100%; /* Adjust the grid width */
+  }
+
+
   .non-print-section {
     display: none; /* Hide everything by default */
   }
