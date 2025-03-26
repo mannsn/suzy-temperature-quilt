@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
-    <section id="mainsection">
+    <section id="mainsection" class="non-print-section">
       <h1 id="temperatureQuilt">Temperature quilt</h1>
       <p>
         A temperature quilt is a creative and colorful way to document daily
@@ -28,6 +28,14 @@
         rows by 16 columns. Using 3.5 inch blocks would result in a 48 inch wide
         by 72 inch long block design.
       </p>
+   
+        <li>
+          Select Generate Pattern to generate the pattern based on inputs.
+        </li>
+        <li>
+          Select Print (below pattern) to add block information and print quilt section.
+        </li>
+
 
       <img
         src="img/tempsquares.jpg"
@@ -37,7 +45,7 @@
       />
     </section>
 
-    <section id="formSection">
+    <section id="formSection"class="non-print-section">
       <form id="quiltForm" name="quiltForm" autocomplete="on">
         <label for="latitude">Enter a latitude </label>
         <input
@@ -104,7 +112,7 @@
       </form>
     </section>
 
-    <section id="quiltsection">
+    <section id="quiltsection"class="print-section">
       <div class="quilt">
         <!-- Example temperature blocks -->
         <div
@@ -2412,12 +2420,14 @@
         ></div>
       </div>
 
-      <form id="prtForm">
-        <button id="prtButton" type="submit" class="submit-button">
-          Print
-        </button>
-      </form>
+  
     </section>
+    
+    <form id="prtForm" class="non-print-section">
+      <button id="prtButton" type="submit" class="submit-button">
+        Print
+      </button>
+    </form>
 
     <script src="js/index.js"></script>
   </body>

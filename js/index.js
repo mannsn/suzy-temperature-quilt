@@ -138,7 +138,6 @@ function displayBlocks(tempArray, unit, year, filler) {
       }
     }
 
-  
     // If no range matches, set the title attribute to "none"
     if (colorRangeIndex === 9) {
       block.setAttribute("title", "none");
@@ -160,7 +159,7 @@ function displayBlocks(tempArray, unit, year, filler) {
     }
 
     //Hide textcontent in case it was there from previous print
-    block.textContent ="";
+    block.textContent = "";
   });
 }
 
@@ -252,6 +251,9 @@ function onPrtSubmit(event) {
     // Add the title as content inside the temp-block
     block.textContent = title;
   });
+
+  //Print the quilt section (see media query in css)
+  window.print();
 }
 
 //Main - Setup
