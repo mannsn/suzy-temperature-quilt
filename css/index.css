@@ -82,18 +82,14 @@ input[type="radio"] {
 }
 
 button {
-  border: none;
-  display: inline-block;
+  border:#001845;
   background-color: rgb(191, 187, 196);
   color: #001845;
   font-weight: bold;
-  text-align: center;
-  align-self: center;
   max-width: 30%;
-  border-radius: 30%;
-  font-family: "Quicksand";
+  border-radius: 30%;  
   margin-top: 1em;
-}
+  }
 
 h3 {
   font-style: italic;
@@ -102,8 +98,19 @@ h3 {
 form {
   text-align: center;
 }
+.block-title {
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1em;
+  color: #333;
+  visibility: hidden;
+}
 
 .quilt {
+  
   display: grid;
   grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
   gap: .25em; /* Space between blocks */
@@ -115,4 +122,8 @@ form {
   padding-top: 100%; /* Makes the block square */
   background-color: var(--temp-color); /* Use dynamically assigned color */
   border: 1px solid #121212; /* Optional border for quilt effect */
+
+}
+#prntContainer{
+  text-align:center;
 }

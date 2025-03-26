@@ -17,11 +17,10 @@ async function weatherAPI(weatherURL) {
 //Once the data is returned, display resulting blocks
 async function getWeather(weatherURL, unit, year, hiOrLow, filler) {
   const weather = await weatherAPI(weatherURL);
-  if (hiOrLow === "max"){
+  if (hiOrLow === "max") {
     displayBlocks(weather.daily.temperature_2m_max, unit, year, filler);
-  }
-  else{
-    displayBlocks(weather.daily.temperature_2m_min, unit, year,filler);
+  } else {
+    displayBlocks(weather.daily.temperature_2m_min, unit, year, filler);
   }
 }
 
@@ -30,8 +29,8 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
   const months = []; // Array to store divided months
   let startIndex = 0;
 
-  console.log (daysArray);
-  console.log(numMonthDays)
+  console.log(daysArray);
+  console.log(numMonthDays);
 
   numMonthDays.forEach((numMonthDays) => {
     const monthDays = daysArray.slice(startIndex, startIndex + numMonthDays);
@@ -52,7 +51,7 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
 
 //Display resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
-function displayBlocks(tempArray, unit, year,filler) {
+function displayBlocks(tempArray, unit, year, filler) {
   const tempBlocks = document.querySelectorAll(".temp-block");
   let degreeSymbol = "\u00B0";
 
@@ -85,31 +84,39 @@ function displayBlocks(tempArray, unit, year,filler) {
   const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const daysInMonthsLeapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   let dividedMonths = [];
-  let padDays = 32;
-  if (filler === "no"){
-    padDays = 0;
-  }
-  if (year === "2020") {
-     dividedMonths = divideDaysByMonths(tempArray, daysInMonthsLeapYear, padDays);
-  } else {
-     dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
-  }
+  let yearTemps = [];
 
-  //console.log("divided Months", dividedMonths);
-  const yearTemps = [
-    ...dividedMonths[0],
-    ...dividedMonths[1],
-    ...dividedMonths[2],
-    ...dividedMonths[3],
-    ...dividedMonths[4],
-    ...dividedMonths[5],
-    ...dividedMonths[6],
-    ...dividedMonths[7],
-    ...dividedMonths[8],
-    ...dividedMonths[9],
-    ...dividedMonths[10],
-    ...dividedMonths[11],
-  ];
+  if (filler === "yes") {
+    let padDays = 32;
+    //Divide temperature array into arrays by months
+    if (year === "2020") {
+      dividedMonths = divideDaysByMonths(
+        tempArray,
+        daysInMonthsLeapYear,
+        padDays
+      );
+    } else {
+      dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
+    }
+
+    //Put months array back together with filler days added
+    yearTemps = [
+      ...dividedMonths[0],
+      ...dividedMonths[1],
+      ...dividedMonths[2],
+      ...dividedMonths[3],
+      ...dividedMonths[4],
+      ...dividedMonths[5],
+      ...dividedMonths[6],
+      ...dividedMonths[7],
+      ...dividedMonths[8],
+      ...dividedMonths[9],
+      ...dividedMonths[10],
+      ...dividedMonths[11],
+    ];
+  } else {
+    yearTemps = [...tempArray];
+  }
 
   //console.log("yearTemps", yearTemps);
   let dayNumber = 1;
@@ -117,62 +124,32 @@ function displayBlocks(tempArray, unit, year,filler) {
   //For each block, find matching temperature and set color plus title
   tempBlocks.forEach((block, index) => {
     let colorRangeIndex = 9;
-
     const temp = yearTemps[index];
-    //console.log("temp=", temp, index);
-    if (unit === "fahrenheit") {
-      if (temp > colorRanges[0].gt) {
-        colorRangeIndex = 0;
-      } else if (temp > colorRanges[1].gt) {
-        colorRangeIndex = 1;
-      } else if (temp > colorRanges[2].gt) {
-        colorRangeIndex = 2;
-      } else if (temp > colorRanges[3].gt) {
-        colorRangeIndex = 3;
-      } else if (temp > colorRanges[4].gt) {
-        colorRangeIndex = 4;
-      } else if (temp > colorRanges[5].gt) {
-        colorRangeIndex = 5;
-      } else if (temp > colorRanges[6].gt) {
-        colorRangeIndex = 6;
-      } else if (temp > colorRanges[7].gt) {
-        colorRangeIndex = 7;
-      } else if (temp > colorRanges[8].gt) {
-        colorRangeIndex = 8;
-      } else {
-        block.setAttribute("title", `none`);
-        colorRangeIndex = 9;
-      }
-    } else {
-      if (temp > colorRangesCelsius[0].gt) {
-        colorRangeIndex = 0;
-      } else if (temp > colorRangesCelsius[1].gt) {
-        colorRangeIndex = 1;
-      } else if (temp > colorRangesCelsius[2].gt) {
-        colorRangeIndex = 2;
-      } else if (temp > colorRangesCelsius[3].gt) {
-        colorRangeIndex = 3;
-      } else if (temp > colorRangesCelsius[4].gt) {
-        colorRangeIndex = 4;
-      } else if (temp > colorRangesCelsius[5].gt) {
-        colorRangeIndex = 5;
-      } else if (temp > colorRangesCelsius[6].gt) {
-        colorRangeIndex = 6;
-      } else if (temp > colorRangesCelsius[7].gt) {
-        colorRangeIndex = 7;
-      } else if (temp > colorRangesCelsius[8].gt) {
-        colorRangeIndex = 8;
-      } else {
-        block.setAttribute("title", `none`);
-        colorRangeIndex = 9;
+
+    //Set color ranges based on farenheit or celsius range depending on user selection
+    const colorRangesToCheck =
+      unit === "fahrenheit" ? colorRanges : colorRangesCelsius;
+
+    //Determine color based on temperature range
+    for (let i = 0; i < colorRangesToCheck.length; i++) {
+      if (temp > colorRangesToCheck[i].gt) {
+        colorRangeIndex = i;
+        break; // Exit the loop once the matching range is found
       }
     }
 
+    // If no range matches, set the title attribute to "none"
+    if (colorRangeIndex === 9) {
+      block.setAttribute("title", "none");
+    }
+
+    //Set the color
     block.style.setProperty(
       "--temp-color",
       `${colorRanges[colorRangeIndex].value}`
     );
 
+    //Set the title
     if (colorRangeIndex < 9) {
       block.setAttribute(
         "title",
