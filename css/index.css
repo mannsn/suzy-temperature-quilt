@@ -156,11 +156,12 @@ form {
 
   @page {
     margin: 0;
+    size: landscape;
   }
 
   .quilt {
     display: grid;
-    grid-template-columns: repeat(16, 120px); /* 16 blocks per row */
+    grid-template-columns: repeat(16, 165px); /* 16 blocks per row */
     gap: 0; /* Space between blocks */
     max-width: 100%; /* Adjust the grid width */
   }

@@ -178,7 +178,7 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
     if (colorRangeIndex < 9) {
       block.setAttribute(
         "title",
-        `${dayNumber}\n${temp}`
+        `#${dayNumber}\n${temp}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
       );
       dayNumber = ++dayNumber;
     }
