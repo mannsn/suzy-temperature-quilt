@@ -15,7 +15,7 @@ async function weatherAPI(weatherURL) {
 }
 
 //Once the data is returned, display resulting blocks
-async function getWeather(
+async function getWeatherAndGenerate(
   weatherURL,
   unit,
   year,
@@ -24,9 +24,12 @@ async function getWeather(
   longitude,
   filler
 ) {
+  //Get the temperature data
   const weather = await weatherAPI(weatherURL);
+
+  //Determine if it was high or low weather temperature selected and generate blocks
   if (hiOrLow === "max") {
-    displayBlocks(
+    generateBlocks(
       weather.daily.temperature_2m_max,
       unit,
       year,
@@ -35,7 +38,7 @@ async function getWeather(
       filler
     );
   } else {
-    displayBlocks(
+    generateBlocks(
       weather.daily.temperature_2m_min,
       unit,
       year,
@@ -71,11 +74,20 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
   return months;
 }
 
-//Display resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
+//Create a new page for generated pattern
+function openPredefinedPage() {
+  // Open a new window
+  const newWindow = window.open("/generate.html", "_blank");
+}
+
+//Generate resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
-function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
+function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
   const tempBlocks = document.querySelectorAll(".temp-block");
+  console.log(tempBlocks);
   let degreeSymbol = "\u00B0";
+
+  //openPredefinedPage();
 
   const colorRanges = [
     { name: "Harvest Red", value: "#c04040", gt: 95 },
@@ -164,7 +176,7 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
     if (colorRangeIndex === 9) {
       block.setAttribute("title", "");
     }
-
+console.log (`${colorRanges[colorRangeIndex].value}`);
     //Set the color
     block.style.setProperty(
       "--temp-color",
@@ -178,7 +190,7 @@ function displayBlocks(tempArray, unit, year, latitude, longitude, filler) {
     if (colorRangeIndex < 9) {
       block.setAttribute(
         "title",
-        `#${dayNumber}\n${temp}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
+        `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
       );
       dayNumber = ++dayNumber;
     }
@@ -264,7 +276,15 @@ function onFormSubmit(event) {
   console.log(weatherURL);
 
   //Get the temperatures for the year and generate the quilt pattern
-  getWeather(weatherURL, unit, year, hiOrLow, latitude, longitude, filler);
+  getWeatherAndGenerate(
+    weatherURL,
+    unit,
+    year,
+    hiOrLow,
+    latitude,
+    longitude,
+    filler
+  );
 }
 
 //Print the quilt pattern
