@@ -74,11 +74,9 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
   return months;
 }
 
-
 //Generate resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
 function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
- 
   // Open a new window
   const newWindow = window.open("/generate.html", "_blank");
 
@@ -224,6 +222,9 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
     console.log(quiltTitle);
 
     quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+
+    const print = newWindow.document.getElementById("prtForm");
+    print.addEventListener("submit", onPrtSubmit);
   };
 
   if (newWindow && !newWindow.closed) {
@@ -316,8 +317,17 @@ function onFormSubmit(event) {
 function onPrtSubmit(event) {
   event.preventDefault();
 
+  let associatedDocument = event.target.ownerDocument;
+  console.log("Document where the button was clicked:", associatedDocument.title);
+
+  // If needed, get the window context
+  let associatedWindow = associatedDocument.defaultView;
+  console.log("Window URL:", associatedWindow.location.href);
+
+
   // Select the temp-block element
-  const tempBlocks = document.querySelectorAll(".temp-block");
+  const tempBlocks = associatedWindow.document.querySelectorAll(".temp-block");
+  console.log (tempBlocks);
 
   tempBlocks.forEach((block, index) => {
     // Get the title attribute value
@@ -327,7 +337,7 @@ function onPrtSubmit(event) {
   });
 
   //Print the quilt section (see media query in css)
-  window.print();
+  associatedWindow.print();
 }
 
 //Main - Setup
@@ -337,6 +347,3 @@ const messageForm = document.getElementById("quiltForm");
 console.log(messageForm);
 
 messageForm.addEventListener("submit", onFormSubmit);
-
-const print = document.getElementById("prtForm");
-print.addEventListener("submit", onPrtSubmit);
