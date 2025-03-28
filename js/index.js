@@ -74,136 +74,161 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
   return months;
 }
 
-//Create a new page for generated pattern
-function openPredefinedPage() {
-  // Open a new window
-  const newWindow = window.open("/generate.html", "_blank");
-}
 
 //Generate resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
 function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
-  const tempBlocks = document.querySelectorAll(".temp-block");
-  console.log(tempBlocks);
-  let degreeSymbol = "\u00B0";
+ 
+  // Open a new window
+  const newWindow = window.open("/generate.html", "_blank");
 
-  //openPredefinedPage();
+  // Wait for the new window to load its content
+  newWindow.onload = function () {
+    console.log("adding to new html");
 
-  const colorRanges = [
-    { name: "Harvest Red", value: "#c04040", gt: 95 },
-    { name: "Fuchsia", value: "#ff00ff", gt: 89 },
-    { name: "Autumn Red", value: "#ff4500", gt: 79 },
-    { name: "Mango", value: "#ffa500", gt: 69 },
-    { name: "Sunshine", value: "#ffd700", gt: 59 },
-    { name: "Soft Green", value: "#90ee90", gt: 50 },
-    { name: "Cool Green", value: "#32cd32", gt: 40 },
-    { name: "Blue Mint", value: "#87ceeb", gt: 31 },
-    { name: "Purple", value: "#800080", gt: -50 },
-    { name: "Gray", value: "#d0d0d0", gt: -100 },
-  ];
+    const quiltDiv = newWindow.document.createElement("div");
+    quiltDiv.className = "quilt";
 
-  const colorRangesCelsius = [
-    { name: "Harvest Red", value: "#c04040", gt: 35 },
-    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
-    { name: "Autumn Red", value: "#ff4500", gt: 25 },
-    { name: "Mango", value: "#ffa500", gt: 20 },
-    { name: "Sunshine", value: "#ffd700", gt: 17 },
-    { name: "Soft Green", value: "#90ee90", gt: 15 },
-    { name: "Cool Green", value: "#32cd32", gt: 10 },
-    { name: "Blue Mint", value: "#87ceeb", gt: 0 },
-    { name: "Purple", value: "#800080", gt: -20 },
-    { name: "Gray", value: "#d0d0d0", gt: -100 },
-  ];
+    // Create 184 divs dynamically in the new window
+    for (let i = 1; i <= 384; i++) {
+      const div = newWindow.document.createElement("div");
+      div.className = "temp-block";
+      div.style.setProperty("--temp-color", "#6f6866ff");
+      div.title = "65°F";
 
-  const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  const daysInMonthsLeapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  let dividedMonths = [];
-  let yearTemps = [];
-
-  if (filler === "yes") {
-    let padDays = 32;
-    //Divide temperature array into arrays by months
-    if (year === "2020") {
-      dividedMonths = divideDaysByMonths(
-        tempArray,
-        daysInMonthsLeapYear,
-        padDays
-      );
-    } else {
-      dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
+      // Append the div to the body of the new window
+      quiltDiv.appendChild(div);
     }
 
-    //Put months array back together with filler days added
-    yearTemps = [
-      ...dividedMonths[0],
-      ...dividedMonths[1],
-      ...dividedMonths[2],
-      ...dividedMonths[3],
-      ...dividedMonths[4],
-      ...dividedMonths[5],
-      ...dividedMonths[6],
-      ...dividedMonths[7],
-      ...dividedMonths[8],
-      ...dividedMonths[9],
-      ...dividedMonths[10],
-      ...dividedMonths[11],
+    // Append the quilt to the body or desired container
+    newWindow.document.body.appendChild(quiltDiv);
+
+    const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
+    console.log(tempBlocks);
+    let degreeSymbol = "\u00B0";
+
+    const colorRanges = [
+      { name: "Harvest Red", value: "#c04040", gt: 95 },
+      { name: "Fuchsia", value: "#ff00ff", gt: 89 },
+      { name: "Autumn Red", value: "#ff4500", gt: 79 },
+      { name: "Mango", value: "#ffa500", gt: 69 },
+      { name: "Sunshine", value: "#ffd700", gt: 59 },
+      { name: "Soft Green", value: "#90ee90", gt: 50 },
+      { name: "Cool Green", value: "#32cd32", gt: 40 },
+      { name: "Blue Mint", value: "#87ceeb", gt: 31 },
+      { name: "Purple", value: "#800080", gt: -50 },
+      { name: "Gray", value: "#d0d0d0", gt: -100 },
     ];
-  } else {
-    yearTemps = [...tempArray];
-  }
 
-  //console.log("yearTemps", yearTemps);
-  let dayNumber = 1;
+    const colorRangesCelsius = [
+      { name: "Harvest Red", value: "#c04040", gt: 35 },
+      { name: "Fuchsia", value: "#ff00ff", gt: 30 },
+      { name: "Autumn Red", value: "#ff4500", gt: 25 },
+      { name: "Mango", value: "#ffa500", gt: 20 },
+      { name: "Sunshine", value: "#ffd700", gt: 17 },
+      { name: "Soft Green", value: "#90ee90", gt: 15 },
+      { name: "Cool Green", value: "#32cd32", gt: 10 },
+      { name: "Blue Mint", value: "#87ceeb", gt: 0 },
+      { name: "Purple", value: "#800080", gt: -20 },
+      { name: "Gray", value: "#d0d0d0", gt: -100 },
+    ];
 
-  //For each block, find matching temperature and set color plus title
-  tempBlocks.forEach((block, index) => {
-    let colorRangeIndex = 9;
-    const temp = yearTemps[index];
+    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const daysInMonthsLeapYear = [
+      31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+    ];
+    let dividedMonths = [];
+    let yearTemps = [];
 
-    //Set color ranges based on farenheit or celsius range depending on user selection
-    const colorRangesToCheck =
-      unit === "fahrenheit" ? colorRanges : colorRangesCelsius;
-
-    //Determine color based on temperature range
-    for (let i = 0; i < colorRangesToCheck.length; i++) {
-      if (temp > colorRangesToCheck[i].gt) {
-        colorRangeIndex = i;
-        break; // Exit the loop once the matching range is found
+    if (filler === "yes") {
+      let padDays = 32;
+      //Divide temperature array into arrays by months
+      if (year === "2020") {
+        dividedMonths = divideDaysByMonths(
+          tempArray,
+          daysInMonthsLeapYear,
+          padDays
+        );
+      } else {
+        dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
       }
+
+      //Put months array back together with filler days added
+      yearTemps = [
+        ...dividedMonths[0],
+        ...dividedMonths[1],
+        ...dividedMonths[2],
+        ...dividedMonths[3],
+        ...dividedMonths[4],
+        ...dividedMonths[5],
+        ...dividedMonths[6],
+        ...dividedMonths[7],
+        ...dividedMonths[8],
+        ...dividedMonths[9],
+        ...dividedMonths[10],
+        ...dividedMonths[11],
+      ];
+    } else {
+      yearTemps = [...tempArray];
     }
 
-    // If no range matches, set the title attribute to "none"
-    if (colorRangeIndex === 9) {
-      block.setAttribute("title", "");
-    }
-console.log (`${colorRanges[colorRangeIndex].value}`);
-    //Set the color
-    block.style.setProperty(
-      "--temp-color",
-      `${colorRanges[colorRangeIndex].value}`
-    );
+    //console.log("yearTemps", yearTemps);
+    let dayNumber = 1;
 
-    //Get the correct unit for the title
-    let titleUnit = unit === "fahrenheit" ? "F" : "C";
+    //For each block, find matching temperature and set color plus title
+    tempBlocks.forEach((block, index) => {
+      let colorRangeIndex = 9;
+      const temp = yearTemps[index];
 
-    //Set the title
-    if (colorRangeIndex < 9) {
-      block.setAttribute(
-        "title",
-        `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
+      //Set color ranges based on farenheit or celsius range depending on user selection
+      const colorRangesToCheck =
+        unit === "fahrenheit" ? colorRanges : colorRangesCelsius;
+
+      //Determine color based on temperature range
+      for (let i = 0; i < colorRangesToCheck.length; i++) {
+        if (temp > colorRangesToCheck[i].gt) {
+          colorRangeIndex = i;
+          break; // Exit the loop once the matching range is found
+        }
+      }
+
+      // If no range matches, set the title attribute to "none"
+      if (colorRangeIndex === 9) {
+        block.setAttribute("title", "");
+      }
+
+      //Set the color
+      block.style.setProperty(
+        "--temp-color",
+        `${colorRanges[colorRangeIndex].value}`
       );
-      dayNumber = ++dayNumber;
-    }
 
-    //Hide textcontent in case it was there from previous print
-    block.textContent = "";
-  });
+      //Get the correct unit for the title
+      let titleUnit = unit === "fahrenheit" ? "F" : "C";
 
-  //Add a header for the quilt pattrn
-  const quiltTitle = document.getElementById("quiltTitle");
-  console.log(quiltTitle);
+      //Set the title
+      if (colorRangeIndex < 9) {
+        block.setAttribute(
+          "title",
+          `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
+        );
+        dayNumber = ++dayNumber;
+      }
 
-  quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+      //Hide textcontent in case it was there from previous print
+      block.textContent = "";
+    });
+
+    //Add a header for the quilt pattrn
+    const quiltTitle = newWindow.document.getElementById("quiltTitle");
+    console.log(quiltTitle);
+
+    quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+  };
+
+  if (newWindow && !newWindow.closed) {
+    console.log(newWindow.document.body.innerHTML);
+  }
 }
 
 //Determine which radio button is selected given a button name

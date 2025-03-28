@@ -123,7 +123,7 @@ form {
 
 .quilt {
   display: grid;
-  grid-template-columns: repeat(16, 165fr); /* 16 blocks per row */
+  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
   gap: 0.25em; /* Space between blocks */
   max-width: 100%; /* Adjust the grid width */
   margin-top: 1em;
@@ -132,6 +132,7 @@ form {
 .temp-block {
   width: 100%; /* Block fills grid cell */
   padding-top: 100%; /* Makes the block square */
+  background-color: var(--temp-color); /* Use dynamically assigned color */
   border: 1px solid #121212; /* Optional border for quilt effect */
 }
 
