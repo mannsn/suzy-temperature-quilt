@@ -46,7 +46,7 @@ h2 {
   /*font-size:medium*/
 }
 p {
-  text-align: center;
+  /*text-align: center;*/
   /*font-size: medium;*/
 }
 
@@ -165,7 +165,6 @@ form {
     gap: 0; /* Space between blocks */
     max-width: 100%; /* Adjust the grid width */
   }
-
 
   .non-print-section {
     display: none; /* Hide everything by default */
