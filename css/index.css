@@ -100,7 +100,7 @@ img {
 
 #container {
   display: grid;
-  grid-template-rows: 1fr 2fr;
+  grid-template-rows: 1fr fr;
   gap: 2em; /* Space between sections */
   padding: 2em; /* Space inside the container */
 }
@@ -117,21 +117,33 @@ img {
   border-radius: 8px;
   text-align: center;
 }
-#color-ranges {
+
+
+#color-ranges  {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
+  
+  
+}
+*#celsius-color-ranges, #fahrenheit-color-ranges  {
   display: flex;
   flex-direction: column;
   align-items: center;
+ 
 }
+
 
 .range {
   display: flex;
   align-items: center;
   margin-bottom: 0.25em;
-}
+ }
 
 .range label {
-  margin-right: 1em;
- 
+  margin-right: 1em; 
   text-align: right;
 }
 
@@ -140,7 +152,7 @@ img {
 }
 
 .range .temp-value {
-  margin-left: .25em;
+  margin-left: .25em;*/
   font-weight: bold;
 }
 
