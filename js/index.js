@@ -262,19 +262,21 @@ function makeColorRangesForm() {
   ];
 
   const colorRangesCelsius = [
-    { name: "Harvest Red", value: "#c04040", gt: 35 },
-    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
+    { name: "Harvest Red", value: "#c04040", gt: 50 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 45 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 40 },
+    { name: "Autumn Red", value: "#ff4500", gt: 35 },
     { name: "Autumn Red", value: "#ff4500", gt: 25 },
-    { name: "Mango", value: "#ffa500", gt: 20 },
-    { name: "Sunshine", value: "#ffd700", gt: 17 },
-    { name: "Soft Green", value: "#90ee90", gt: 15 },
-    { name: "Cool Green", value: "#32cd32", gt: 10 },
+    { name: "Mango", value: "#ffa500", gt:20 },
+    { name: "Sunshine", value: "#ffd700", gt: 15 },
+    { name: "Soft Green", value: "#90ee90", gt: 10 },
+    { name: "Cool Green", value: "#32cd32", gt: 5 },
     { name: "Blue Mint", value: "#87ceeb", gt: 0 },
-    { name: "Purple", value: "#800080", gt: -20 },
-    { name: "Gray", value: "#d0d0d0", gt: -100 },
+    { name: "Purple", value: "#800080", gt: -5 },
+    { name: "Gray", value: "#d0d0d0", gt: -10 },
   ];
 
-  const container = document.getElementById("color-ranges");
+  const containerFahrenheit = document.getElementById("fahrenheit-color-ranges");
 
   colorRangesFahrenheit.forEach((range,index) => {
     const rangeDiv = document.createElement("div");
@@ -304,7 +306,40 @@ function makeColorRangesForm() {
     tempValue.textContent = `> ${range.gt}°F`;
     rangeDiv.appendChild(tempValue);
 
-    container.appendChild(rangeDiv);
+    containerFahrenheit.appendChild(rangeDiv);
+  });
+
+  const containerCelsius = document.getElementById("celsius-color-ranges");
+
+  colorRangesCelsius.forEach((range,index) => {
+    const rangeDiv = document.createElement("div");
+    rangeDiv.classList.add("range");
+
+    // Label for range name
+    const label = document.createElement(`range${index}`);
+
+    // Color name
+    const colorName = document.createElement("input");
+    colorName.type = "text";
+    colorName.value = range.name;
+    colorName.maxLength = 15;
+    colorName.size = 15;
+    rangeDiv.appendChild(colorName);
+
+    // Color picker
+    const colorPicker = document.createElement("input");
+    colorPicker.type = "color";
+    colorPicker.value = range.value;
+    rangeDiv.appendChild(colorPicker);
+
+    
+    // Temperature value
+    const tempValue = document.createElement("span");
+    tempValue.classList.add("temp-value");
+    tempValue.textContent = `> ${range.gt}°C`;
+    rangeDiv.appendChild(tempValue);
+
+    containerCelsius.appendChild(rangeDiv);
   });
 }
 

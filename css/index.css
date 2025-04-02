@@ -100,7 +100,7 @@ img {
 
 #container {
   display: grid;
-  grid-template-rows: 2fr 1fr;
+  grid-template-rows: 1fr 2fr;
   gap: 2em; /* Space between sections */
   padding: 2em; /* Space inside the container */
 }
