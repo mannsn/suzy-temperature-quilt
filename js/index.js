@@ -76,7 +76,16 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
 
 //Generate resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
 //TODO: allow colorRanges to be input
-function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
+function generateBlocks(
+  tempArray,
+  unit,
+  year,
+  latitude,
+  longitude,
+  filler,
+  colorRangesFahrenheit,
+  colorRangesCelsius
+) {
   // Open a new window
   const newWindow = window.open("/generate.html", "_blank");
 
@@ -232,6 +241,73 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
   }
 }
 
+//Form Section
+function makeColorRangesForm() {
+  const colorRangesFahrenheit = [
+    { name: "Harvest Red", value: "#c04040", gt: 110 },
+    { name: "Harvest Red", value: "#c04040", gt: 100 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 90 },
+    { name: "Autumn Red", value: "#ff4500", gt: 80 },
+    { name: "Mango", value: "#ffa500", gt: 70 },
+    { name: "Sunshine", value: "#ffd700", gt: 60 },
+    { name: "Soft Green", value: "#90ee90", gt: 50 },
+    { name: "Cool Green", value: "#32cd32", gt: 40 },
+    { name: "Blue Mint", value: "#87ceeb", gt: 30 },
+    { name: "Purple", value: "#800080", gt: 20 },
+    { name: "Purple", value: "#800080", gt: 10 },
+    { name: "Purple", value: "#800080", gt: 0 },
+    { name: "Purple", value: "#800080", gt: -10 },
+    { name: "Gray", value: "#d0d0d0", gt: -20 },
+    { name: "Gray", value: "#d0d0d0", gt: -30 },
+  ];
+
+  const colorRangesCelsius = [
+    { name: "Harvest Red", value: "#c04040", gt: 35 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
+    { name: "Autumn Red", value: "#ff4500", gt: 25 },
+    { name: "Mango", value: "#ffa500", gt: 20 },
+    { name: "Sunshine", value: "#ffd700", gt: 17 },
+    { name: "Soft Green", value: "#90ee90", gt: 15 },
+    { name: "Cool Green", value: "#32cd32", gt: 10 },
+    { name: "Blue Mint", value: "#87ceeb", gt: 0 },
+    { name: "Purple", value: "#800080", gt: -20 },
+    { name: "Gray", value: "#d0d0d0", gt: -100 },
+  ];
+
+  const container = document.getElementById("color-ranges");
+
+  colorRangesFahrenheit.forEach((range,index) => {
+    const rangeDiv = document.createElement("div");
+    rangeDiv.classList.add("range");
+
+    // Label for range name
+    const label = document.createElement(`range${index}`);
+
+    // Color name
+    const colorName = document.createElement("input");
+    colorName.type = "text";
+    colorName.value = range.name;
+    colorName.maxLength = 15;
+    colorName.size = 15;
+    rangeDiv.appendChild(colorName);
+
+    // Color picker
+    const colorPicker = document.createElement("input");
+    colorPicker.type = "color";
+    colorPicker.value = range.value;
+    rangeDiv.appendChild(colorPicker);
+
+    
+    // Temperature value
+    const tempValue = document.createElement("span");
+    tempValue.classList.add("temp-value");
+    tempValue.textContent = `> ${range.gt}°F`;
+    rangeDiv.appendChild(tempValue);
+
+    container.appendChild(rangeDiv);
+  });
+}
+
 //Determine which radio button is selected given a button name
 function getSelectedValue(buttonName) {
   const radioButtons = document.getElementsByName(`${buttonName}`);
@@ -250,6 +326,32 @@ function getSelectedValue(buttonName) {
 
 //When form is submitted, get weather based on input and generate pattern
 function onFormSubmit(event) {
+  const colorRangesFahrenheit = [
+    { name: "Harvest Red", value: "#c04040", gt: 95 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 89 },
+    { name: "Autumn Red", value: "#ff4500", gt: 79 },
+    { name: "Mango", value: "#ffa500", gt: 69 },
+    { name: "Sunshine", value: "#ffd700", gt: 59 },
+    { name: "Soft Green", value: "#90ee90", gt: 50 },
+    { name: "Cool Green", value: "#32cd32", gt: 40 },
+    { name: "Blue Mint", value: "#87ceeb", gt: 31 },
+    { name: "Purple", value: "#800080", gt: -50 },
+    { name: "Gray", value: "#d0d0d0", gt: -100 },
+  ];
+
+  const colorRangesCelsius = [
+    { name: "Harvest Red", value: "#c04040", gt: 35 },
+    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
+    { name: "Autumn Red", value: "#ff4500", gt: 25 },
+    { name: "Mango", value: "#ffa500", gt: 20 },
+    { name: "Sunshine", value: "#ffd700", gt: 17 },
+    { name: "Soft Green", value: "#90ee90", gt: 15 },
+    { name: "Cool Green", value: "#32cd32", gt: 10 },
+    { name: "Blue Mint", value: "#87ceeb", gt: 0 },
+    { name: "Purple", value: "#800080", gt: -20 },
+    { name: "Gray", value: "#d0d0d0", gt: -100 },
+  ];
+
   event.preventDefault();
 
   const data = new FormData(event.target);
@@ -318,16 +420,18 @@ function onPrtSubmit(event) {
   event.preventDefault();
 
   let associatedDocument = event.target.ownerDocument;
-  console.log("Document where the button was clicked:", associatedDocument.title);
+  console.log(
+    "Document where the button was clicked:",
+    associatedDocument.title
+  );
 
   // If needed, get the window context
   let associatedWindow = associatedDocument.defaultView;
   console.log("Window URL:", associatedWindow.location.href);
 
-
   // Select the temp-block element
   const tempBlocks = associatedWindow.document.querySelectorAll(".temp-block");
-  console.log (tempBlocks);
+  console.log(tempBlocks);
 
   tempBlocks.forEach((block, index) => {
     // Get the title attribute value
@@ -341,6 +445,9 @@ function onPrtSubmit(event) {
 }
 
 //Main - Setup
+
+//Create the quilt form color ranges
+makeColorRangesForm();
 
 //Find the quilt form and add the callback for submit
 const messageForm = document.getElementById("quiltForm");
