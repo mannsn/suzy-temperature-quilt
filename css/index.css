@@ -30,9 +30,20 @@ body {
   background-color: var(--ash-gray);
   color: var(--textdark);
   font-family: "Quicksand";
-  font-size: 2vw;
+  /*font-size: 2vw; */
   padding-left: 1em;
   padding-right: 1em;
+}
+
+button {
+  border: #001845;
+  background-color: rgb(170, 140, 205);
+  color: #001845;
+  font-weight: bold;
+  max-width: 40%;
+  border-radius: 40%;
+  margin-top: 1em;
+  font-size: 1em;
 }
 
 h1 {
@@ -45,9 +56,9 @@ h2 {
   color: blueviolet;
   /*font-size:medium*/
 }
-p {
-  /*text-align: center;*/
-  /*font-size: medium;*/
+
+h3 {
+  font-style: italic;
 }
 
 img {
@@ -58,58 +69,36 @@ img {
   max-width: 75%;
 }
 
-input[type="text"] {
-  box-sizing: border-box;
-  margin-top: 5em;
-  display: block;
+#container {
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  gap: 2em; /* Space between sections */
+  padding: 2em; /* Space inside the container */
 }
 
-label {
-  font-style: normal;
-  margin-right: 1em;
-  /*font-size:medium*/
+#textSection {
+  background-color: #f0f0f0;
+  padding: 2em;
+  border-radius: 8px;
 }
 
-li {
+#formSection {
+  background-color: #c3c3cf;
+  padding: 2em;
+  border-radius: 8px;
   text-align: center;
 }
 
-section {
-  margin-top: 2em;
-}
+/*For generate.html*/
 
-#mainsection {
-  margin-top: 0;
-}
-
-input[type="text"],
-label {
-  text-align: center; /* Centers text inside the input box */
-  margin-top: 2em;
-}
-
-input[type="radio"] {
-  accent-color: rgb(129, 83, 197); /* Changes the color of the radio button */
-}
-
-button {
-  border: #001845;
-  background-color: rgb(191, 187, 196);
-  color: #001845;
-  font-weight: bold;
-  max-width: 40%;
-  border-radius: 40%;
+.quilt {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
+  gap: 0.25em; /* Space between blocks */
+  max-width: 100%; /* Adjust the grid width */
   margin-top: 1em;
-  font-size: 1em;
 }
 
-h3 {
-  font-style: italic;
-}
-
-form {
-  text-align: center;
-}
 .block-title {
   position: absolute;
   bottom: -25px;
@@ -119,14 +108,6 @@ form {
   font-size: 1em;
   color: #333;
   visibility: hidden;
-}
-
-.quilt {
-  display: grid;
-  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
-  gap: 0.25em; /* Space between blocks */
-  max-width: 100%; /* Adjust the grid width */
-  margin-top: 1em;
 }
 
 .temp-block {
