@@ -175,7 +175,7 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
 
     //For each block, find matching temperature and set color plus title
     tempBlocks.forEach((block, index) => {
-      let colorRangeIndex = 9;
+      let colorRangeIndex = 99;
       const temp = yearTemps[index];
 
       //Set color ranges based on farenheit or celsius range depending on user selection
@@ -191,7 +191,7 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
       }
 
       // If no range matches, set the title attribute to "none"
-      if (colorRangeIndex === 9) {
+      if (colorRangeIndex === 99) {
         block.setAttribute("title", "");
       }
 
