@@ -265,7 +265,6 @@ function createRangeDiv(range, unit) {
   return rangeDiv;
 }
 
-
 function makeColorRangesForm() {
   const colorRanges = {
     fahrenheit: [
@@ -297,6 +296,11 @@ function makeColorRangesForm() {
 
   Object.entries(colorRanges).forEach(([unit, ranges]) => {
     const container = document.getElementById(`${unit}-color-ranges`);
+
+    let headerString = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+    const tempHeader = document.createElement("h3");
+    tempHeader.innerHTML = headerString;
+    container.appendChild(tempHeader);
 
     ranges.forEach((range) => {
       const rangeDiv = createRangeDiv(range, unit);
