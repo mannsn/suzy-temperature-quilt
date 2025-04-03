@@ -22,7 +22,9 @@ async function getWeatherAndGenerate(
   hiOrLow,
   latitude,
   longitude,
-  filler
+  filler,
+  colorRangesFahrenheit,
+  colorRangesCelsius
 ) {
   //Get the temperature data
   const weather = await weatherAPI(weatherURL);
@@ -33,18 +35,24 @@ async function getWeatherAndGenerate(
       weather.daily.temperature_2m_max,
       unit,
       year,
+      hiOrLow,
       latitude,
       longitude,
-      filler
+      filler,
+      colorRangesFahrenheit,
+      colorRangesCelsius
     );
   } else {
     generateBlocks(
       weather.daily.temperature_2m_min,
       unit,
       year,
+      hiOrLow,
       latitude,
       longitude,
-      filler
+      filler,
+      colorRangesFahrenheit,
+      colorRangesCelsius
     );
   }
 }
@@ -75,8 +83,17 @@ function divideDaysByMonths(daysArray, numMonthDays, fillerDaysIn) {
 }
 
 //Generate resulting color blocks based on temperature range and color range - this relies on updating colors on default blocks
-//TODO: allow colorRanges to be input
-function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
+function generateBlocks(
+  tempArray,
+  unit,
+  year,
+  hiOrLow,
+  latitude,
+  longitude,
+  filler,
+  colorRangesFahrenheit,
+  colorRangesCelsius
+) {
   // Open a new window
   const newWindow = window.open("/generate.html", "_blank");
 
@@ -104,32 +121,6 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
     const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
     console.log(tempBlocks);
     let degreeSymbol = "\u00B0";
-
-    const colorRanges = [
-      { name: "Harvest Red", value: "#c04040", gt: 95 },
-      { name: "Fuchsia", value: "#ff00ff", gt: 89 },
-      { name: "Autumn Red", value: "#ff4500", gt: 79 },
-      { name: "Mango", value: "#ffa500", gt: 69 },
-      { name: "Sunshine", value: "#ffd700", gt: 59 },
-      { name: "Soft Green", value: "#90ee90", gt: 50 },
-      { name: "Cool Green", value: "#32cd32", gt: 40 },
-      { name: "Blue Mint", value: "#87ceeb", gt: 31 },
-      { name: "Purple", value: "#800080", gt: -50 },
-      { name: "Gray", value: "#d0d0d0", gt: -100 },
-    ];
-
-    const colorRangesCelsius = [
-      { name: "Harvest Red", value: "#c04040", gt: 35 },
-      { name: "Fuchsia", value: "#ff00ff", gt: 30 },
-      { name: "Autumn Red", value: "#ff4500", gt: 25 },
-      { name: "Mango", value: "#ffa500", gt: 20 },
-      { name: "Sunshine", value: "#ffd700", gt: 17 },
-      { name: "Soft Green", value: "#90ee90", gt: 15 },
-      { name: "Cool Green", value: "#32cd32", gt: 10 },
-      { name: "Blue Mint", value: "#87ceeb", gt: 0 },
-      { name: "Purple", value: "#800080", gt: -20 },
-      { name: "Gray", value: "#d0d0d0", gt: -100 },
-    ];
 
     const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     const daysInMonthsLeapYear = [
@@ -175,12 +166,12 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
 
     //For each block, find matching temperature and set color plus title
     tempBlocks.forEach((block, index) => {
-      let colorRangeIndex = 9;
+      let colorRangeIndex = 99;
       const temp = yearTemps[index];
 
       //Set color ranges based on farenheit or celsius range depending on user selection
       const colorRangesToCheck =
-        unit === "fahrenheit" ? colorRanges : colorRangesCelsius;
+        unit === "fahrenheit" ? colorRangesFahrenheit : colorRangesCelsius;
 
       //Determine color based on temperature range
       for (let i = 0; i < colorRangesToCheck.length; i++) {
@@ -191,24 +182,23 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
       }
 
       // If no range matches, set the title attribute to "none"
-      if (colorRangeIndex === 9) {
+      if (colorRangeIndex === 99) {
         block.setAttribute("title", "");
-      }
+        block.style.setProperty("--temp-color", "#d0d0d0");
+      } else {
+        //Set the color
+        block.style.setProperty(
+          "--temp-color",
+          `${colorRangesToCheck[colorRangeIndex].value}`
+        );
 
-      //Set the color
-      block.style.setProperty(
-        "--temp-color",
-        `${colorRanges[colorRangeIndex].value}`
-      );
+        //Get the correct unit for the title
+        let titleUnit = unit === "fahrenheit" ? "F" : "C";
+        //Set the title
 
-      //Get the correct unit for the title
-      let titleUnit = unit === "fahrenheit" ? "F" : "C";
-
-      //Set the title
-      if (colorRangeIndex < 9) {
         block.setAttribute(
           "title",
-          `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRanges[colorRangeIndex].name}`
+          `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRangesToCheck[colorRangeIndex].name}`
         );
         dayNumber = ++dayNumber;
       }
@@ -221,7 +211,12 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
     const quiltTitle = newWindow.document.getElementById("quiltTitle");
     console.log(quiltTitle);
 
-    quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+    //Get the correct unit for the title
+    let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+    let quiltHighOrLow =
+      hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
+
+    quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
 
     const print = newWindow.document.getElementById("prtForm");
     print.addEventListener("submit", onPrtSubmit);
@@ -230,6 +225,75 @@ function generateBlocks(tempArray, unit, year, latitude, longitude, filler) {
   if (newWindow && !newWindow.closed) {
     console.log(newWindow.document.body.innerHTML);
   }
+}
+//Form Section
+function createRangeDiv(range, unit) {
+  const rangeDiv = document.createElement("div");
+  rangeDiv.classList.add("range");
+
+  const colorName = document.createElement("input");
+  colorName.type = "text";
+  colorName.value = range.name;
+  colorName.maxLength = 15;
+  colorName.size = 15;
+  colorName.classList.add("color-name");
+  rangeDiv.appendChild(colorName);
+
+  const colorPicker = document.createElement("input");
+  colorPicker.type = "color";
+  colorPicker.value = range.value;
+  rangeDiv.appendChild(colorPicker);
+
+  const tempValue = document.createElement("span");
+  tempValue.classList.add("temp-value");
+  tempValue.textContent = `> ${range.gt}°${unit === "fahrenheit" ? "F" : "C"}`;
+  rangeDiv.appendChild(tempValue);
+
+  return rangeDiv;
+}
+
+function makeColorRangesForm() {
+  const colorRanges = {
+    fahrenheit: [
+      { name: "Harvest Red", value: "#c04040", gt: 110 },
+      { name: "Harvest Red", value: "#c04040", gt: 100 },
+      { name: "Fuchsia", value: "#ff00ff", gt: 90 },
+      { name: "Autumn Red", value: "#ff4500", gt: 80 },
+      { name: "Mango", value: "#ffa500", gt: 70 },
+      { name: "Sunshine", value: "#ffd700", gt: 60 },
+      { name: "Soft Green", value: "#90ee90", gt: 50 },
+      { name: "Cool Green", value: "#32cd32", gt: 40 },
+      { name: "Blue Mint", value: "#87ceeb", gt: 30 },
+      { name: "Purple", value: "#800080", gt: 20 },
+      { name: "Gray", value: "#d0d0d0", gt: -20 },
+    ],
+    celsius: [
+      { name: "Harvest Red", value: "#c04040", gt: 50 },
+      { name: "Fuchsia", value: "#ff00ff", gt: 45 },
+      { name: "Autumn Red", value: "#ff4500", gt: 35 },
+      { name: "Mango", value: "#ffa500", gt: 20 },
+      { name: "Sunshine", value: "#ffd700", gt: 15 },
+      { name: "Soft Green", value: "#90ee90", gt: 10 },
+      { name: "Cool Green", value: "#32cd32", gt: 5 },
+      { name: "Blue Mint", value: "#87ceeb", gt: 0 },
+      { name: "Purple", value: "#800080", gt: -5 },
+      { name: "Gray", value: "#d0d0d0", gt: -10 },
+    ],
+  };
+
+  Object.entries(colorRanges).forEach(([unit, ranges]) => {
+    const container = document.getElementById(`${unit}-color-ranges`);
+
+    let headerString = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+    const tempHeader = document.createElement("h3");
+    tempHeader.innerHTML = headerString;
+    container.appendChild(tempHeader);
+
+    ranges.forEach((range) => {
+      const rangeDiv = createRangeDiv(range, unit);
+      container.appendChild(rangeDiv);
+    });
+  });
 }
 
 //Determine which radio button is selected given a button name
@@ -246,6 +310,23 @@ function getSelectedValue(buttonName) {
       return selectedValue;
     }
   }
+}
+
+function getColorRanges(containerId) {
+  const colorRanges = [];
+  const ranges = document.querySelectorAll(`${containerId} .range`);
+  ranges.forEach((range) => {
+    let value = range.querySelector('input[type="color"]').value;
+    let name = range.querySelector('input[type="text"]').value;
+    let gtString = range.querySelector(".temp-value").textContent.trim();
+    let gt = parseInt(gtString.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
+    colorRanges.push({
+      name: name,
+      value: value,
+      gt: gt,
+    });
+  });
+  return colorRanges;
 }
 
 //When form is submitted, get weather based on input and generate pattern
@@ -291,8 +372,11 @@ function onFormSubmit(event) {
   console.log(hiOrLow);
   console.log(filler);
 
-  //TODO allow low for the day to be selected
-  //TDOD  ranges don't work well for celcius
+  // Get Fahrenheit and Celsius color ranges
+  const colorRangesFahrenheit = getColorRanges("#fahrenheit-color-ranges");
+  const colorRangesCelsius = getColorRanges("#celsius-color-ranges");
+  console.log("colorRangesFahrenheit", colorRangesFahrenheit);
+  console.log("colorRangesCelsius", colorRangesCelsius);
 
   //Sample queries https://archive-api.open-meteo.com/v1/archive?latitude=39.2884&longitude=-77.2039&start_date=2024-01-01&end_date=2024-12-31&daily=apparent_temperature_max&temperature_unit=fahrenheit
   //https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2021-01-01&end_date=2021-12-31&daily=temperature_2m_min&temperature_unit=fahrenheit
@@ -309,7 +393,9 @@ function onFormSubmit(event) {
     hiOrLow,
     latitude,
     longitude,
-    filler
+    filler,
+    colorRangesFahrenheit,
+    colorRangesCelsius
   );
 }
 
@@ -318,16 +404,18 @@ function onPrtSubmit(event) {
   event.preventDefault();
 
   let associatedDocument = event.target.ownerDocument;
-  console.log("Document where the button was clicked:", associatedDocument.title);
+  console.log(
+    "Document where the button was clicked:",
+    associatedDocument.title
+  );
 
   // If needed, get the window context
   let associatedWindow = associatedDocument.defaultView;
   console.log("Window URL:", associatedWindow.location.href);
 
-
   // Select the temp-block element
   const tempBlocks = associatedWindow.document.querySelectorAll(".temp-block");
-  console.log (tempBlocks);
+  console.log(tempBlocks);
 
   tempBlocks.forEach((block, index) => {
     // Get the title attribute value
@@ -336,11 +424,25 @@ function onPrtSubmit(event) {
     block.textContent = title;
   });
 
+  // Adding page numbers dynamically
+  /*
+  associatedWindow.addEventListener("beforeprint", () => {
+    const pages = associatedWindow.document.querySelectorAll(".footer");
+    const total = pages.length;
+    pages.forEach((footer, index) => {
+      footer.querySelector(".page-number").textContent = index + 1;
+      footer.querySelector(".total-pages").textContent = total;
+    });
+  });*/
+
   //Print the quilt section (see media query in css)
   associatedWindow.print();
 }
 
 //Main - Setup
+
+//Create the quilt form color ranges
+makeColorRangesForm();
 
 //Find the quilt form and add the callback for submit
 const messageForm = document.getElementById("quiltForm");

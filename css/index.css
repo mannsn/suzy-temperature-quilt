@@ -25,14 +25,52 @@
   font-weight: 100;
   font-style: normal;
 }
+.hero {
+  background: linear-gradient(to right, #3498db, #2ecc71);
+  color: white;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.hero-content h2 {
+  font-size: 1.5em;
+  color: white;
+}
+
+.hero-content button {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hero-content button:hover {
+  background-color: #c0392b;
+}
 
 body {
-  background-color: var(--ash-gray);
-  color: var(--textdark);
-  font-family: "Quicksand";
-  font-size: 2vw;
-  padding-left: 1em;
-  padding-right: 1em;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+
+  padding: 50px 20px;
+  text-align: center;
+}
+
+button {
+  border: #001845;
+  background-color: rgb(170, 140, 205);
+  color: #001845;
+  font-weight: bold;
+  max-width: 40%;
+  border-radius: 40%;
+  margin-top: 1em;
+  font-size: 1em;
 }
 
 h1 {
@@ -45,9 +83,9 @@ h2 {
   color: blueviolet;
   /*font-size:medium*/
 }
-p {
-  /*text-align: center;*/
-  /*font-size: medium;*/
+
+h3 {
+  font-style: italic;
 }
 
 img {
@@ -58,58 +96,70 @@ img {
   max-width: 75%;
 }
 
-input[type="text"] {
-  box-sizing: border-box;
-  margin-top: 5em;
-  display: block;
+#container {
+  display: grid;
+  grid-template-rows: 1fr fr;
+  gap: 2em; /* Space between sections */
+  padding: 2em; /* Space inside the container */
 }
 
-label {
-  font-style: normal;
+#textSection {
+  background-color: #f0f0f0;
+  padding: 2em;
+  border-radius: 8px;
+}
+
+#formSection {
+  background-color: #c3c3cf;
+  padding: 2em;
+  border-radius: 8px;
+  text-align: center;
+}
+
+#color-ranges {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
+}
+*#celsius-color-ranges,
+#fahrenheit-color-ranges {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.range {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25em;
+}
+
+.range label {
   margin-right: 1em;
-  /*font-size:medium*/
+  text-align: right;
 }
 
-li {
-  text-align: center;
+.range input[type="color"] {
+  margin: 0 0.25em;
 }
 
-section {
-  margin-top: 2em;
-}
-
-#mainsection {
-  margin-top: 0;
-}
-
-input[type="text"],
-label {
-  text-align: center; /* Centers text inside the input box */
-  margin-top: 2em;
-}
-
-input[type="radio"] {
-  accent-color: rgb(129, 83, 197); /* Changes the color of the radio button */
-}
-
-button {
-  border: #001845;
-  background-color: rgb(191, 187, 196);
-  color: #001845;
+.range .temp-value {
+  margin-left: 0.25em;
   font-weight: bold;
-  max-width: 40%;
-  border-radius: 40%;
+}
+
+/*For generate.html*/
+
+.quilt {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
+  gap: 0.25em; /* Space between blocks */
+  max-width: 100%; /* Adjust the grid width */
   margin-top: 1em;
-  font-size: 1em;
 }
 
-h3 {
-  font-style: italic;
-}
-
-form {
-  text-align: center;
-}
 .block-title {
   position: absolute;
   bottom: -25px;
@@ -121,14 +171,6 @@ form {
   visibility: hidden;
 }
 
-.quilt {
-  display: grid;
-  grid-template-columns: repeat(16, 1fr); /* 16 blocks per row */
-  gap: 0.25em; /* Space between blocks */
-  max-width: 100%; /* Adjust the grid width */
-  margin-top: 1em;
-}
-
 .temp-block {
   width: 100%; /* Block fills grid cell */
   padding-top: 100%; /* Makes the block square */
@@ -137,6 +179,10 @@ form {
 }
 
 @media print {
+  @page {
+    margin: 1in;
+    size: landscape;
+  }
   body {
     -webkit-print-color-adjust: exact; /* For WebKit-based browsers like Chrome */
     print-color-adjust: exact; /* For other modern browsers */
@@ -144,6 +190,7 @@ form {
     width: 100%;
     overflow: visible;
     zoom: 100%;
+    font: 1em;
   }
 
   html,
@@ -154,11 +201,15 @@ form {
     width: 100%; /* Removes fixed widths */
   }
 
-  @page {
-    margin: 0;
-    size: landscape;
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    border-top: 1px solid black;
   }
-
+  
   .quilt {
     display: grid;
     grid-template-columns: repeat(16, 165px); /* 16 blocks per row */
