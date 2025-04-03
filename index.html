@@ -42,6 +42,18 @@
       </section>
 
       <section id="formSection" class="non-print-section">
+
+        <div class="container">
+          <h1>Search Location</h1>
+          <form id="locationForm">
+              <label for="locationInput">Enter Location:</label>
+              <input type="text" id="locationInput" name="location" placeholder="e.g., Damascus" required>
+              <button type="submit">Search</button>
+          </form>
+          <div id="resultsContainer"></div>
+          <p id="selectedLocation" class="selected"></p>
+      </div>
+      
         <form id="quiltForm" name="quiltForm" autocomplete="on">
           <label for="latitude">Enter a latitude </label>
           <input
