@@ -35,6 +35,7 @@ async function getWeatherAndGenerate(
       weather.daily.temperature_2m_max,
       unit,
       year,
+      hiOrLow,
       latitude,
       longitude,
       filler,
@@ -46,6 +47,7 @@ async function getWeatherAndGenerate(
       weather.daily.temperature_2m_min,
       unit,
       year,
+      hiOrLow,
       latitude,
       longitude,
       filler,
@@ -85,6 +87,7 @@ function generateBlocks(
   tempArray,
   unit,
   year,
+  hiOrLow,
   latitude,
   longitude,
   filler,
@@ -208,7 +211,12 @@ function generateBlocks(
     const quiltTitle = newWindow.document.getElementById("quiltTitle");
     console.log(quiltTitle);
 
-    quiltTitle.textContent = `Quilt Pattern ${year} Location: ${latitude} ${longitude}`;
+    //Get the correct unit for the title
+    let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+    let quiltHighOrLow =
+      hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
+
+    quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
 
     const print = newWindow.document.getElementById("prtForm");
     print.addEventListener("submit", onPrtSubmit);
@@ -304,34 +312,25 @@ function getSelectedValue(buttonName) {
   }
 }
 
+function getColorRanges(containerId) {
+  const colorRanges = [];
+  const ranges = document.querySelectorAll(`${containerId} .range`);
+  ranges.forEach((range) => {
+    let value = range.querySelector('input[type="color"]').value;
+    let name = range.querySelector('input[type="text"]').value;
+    let gtString = range.querySelector(".temp-value").textContent.trim();
+    let gt = parseInt(gtString.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
+    colorRanges.push({
+      name: name,
+      value: value,
+      gt: gt,
+    });
+  });
+  return colorRanges;
+}
+
 //When form is submitted, get weather based on input and generate pattern
 function onFormSubmit(event) {
-  /*const colorRangesFahrenheit = [
-    { name: "Harvest Red", value: "#c04040", gt: 95 },
-    { name: "Fuchsia", value: "#ff00ff", gt: 89 },
-    { name: "Autumn Red", value: "#ff4500", gt: 79 },
-    { name: "Mango", value: "#ffa500", gt: 69 },
-    { name: "Sunshine", value: "#ffd700", gt: 59 },
-    { name: "Soft Green", value: "#90ee90", gt: 50 },
-    { name: "Cool Green", value: "#32cd32", gt: 40 },
-    { name: "Blue Mint", value: "#87ceeb", gt: 31 },
-    { name: "Purple", value: "#800080", gt: -50 },
-    { name: "Gray", value: "#d0d0d0", gt: -100 },
-  ];
-
-  const colorRangesCelsius = [
-    { name: "Harvest Red", value: "#c04040", gt: 35 },
-    { name: "Fuchsia", value: "#ff00ff", gt: 30 },
-    { name: "Autumn Red", value: "#ff4500", gt: 25 },
-    { name: "Mango", value: "#ffa500", gt: 20 },
-    { name: "Sunshine", value: "#ffd700", gt: 17 },
-    { name: "Soft Green", value: "#90ee90", gt: 15 },
-    { name: "Cool Green", value: "#32cd32", gt: 10 },
-    { name: "Blue Mint", value: "#87ceeb", gt: 0 },
-    { name: "Purple", value: "#800080", gt: -20 },
-    { name: "Gray", value: "#d0d0d0", gt: -100 },
-  ];*/
-
   event.preventDefault();
 
   const data = new FormData(event.target);
@@ -373,42 +372,10 @@ function onFormSubmit(event) {
   console.log(hiOrLow);
   console.log(filler);
 
-  //Get the color ranges
-  const colorRangesFahrenheit = [];
-  const fahrenheitRanges = document.querySelectorAll(
-    "#fahrenheit-color-ranges .range"
-  );
-  fahrenheitRanges.forEach((range, index) => {
-    let value = range.querySelector('input[type="color"]').value;
-    let name = range.querySelector('input[type="text"]').value;
-    let gtString = range.querySelector(".temp-value").textContent.trim();
-    let gt = parseInt(gtString.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
-    colorRangesFahrenheit.push({
-      name: `${name}`,
-      value: `${value}`,
-      gt: `${gt}`,
-    });
-  });
-
-  console.log("colorRangesFahrenheits", colorRangesFahrenheit);
-
-  // Celsius ranges
-  const colorRangesCelsius = [];
-  const celsiusRanges = document.querySelectorAll(
-    "#celsius-color-ranges .range"
-  );
-  celsiusRanges.forEach((range, index) => {
-    let value = range.querySelector('input[type="color"]').value;
-    let name = range.querySelector('input[type="text"]').value;
-    let gtString = range.querySelector(".temp-value").textContent.trim();
-    let gt = parseInt(gtString.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
-    colorRangesCelsius.push({
-      name: `${name}`,
-      value: `${value}`,
-      gt: `${gt}`,
-    });
-  });
-
+  // Get Fahrenheit and Celsius color ranges
+  const colorRangesFahrenheit = getColorRanges("#fahrenheit-color-ranges");
+  const colorRangesCelsius = getColorRanges("#celsius-color-ranges");
+  console.log("colorRangesFahrenheit", colorRangesFahrenheit);
   console.log("colorRangesCelsius", colorRangesCelsius);
 
   //Sample queries https://archive-api.open-meteo.com/v1/archive?latitude=39.2884&longitude=-77.2039&start_date=2024-01-01&end_date=2024-12-31&daily=apparent_temperature_max&temperature_unit=fahrenheit
@@ -456,6 +423,17 @@ function onPrtSubmit(event) {
     // Add the title as content inside the temp-block
     block.textContent = title;
   });
+
+  // Adding page numbers dynamically
+  /*
+  associatedWindow.addEventListener("beforeprint", () => {
+    const pages = associatedWindow.document.querySelectorAll(".footer");
+    const total = pages.length;
+    pages.forEach((footer, index) => {
+      footer.querySelector(".page-number").textContent = index + 1;
+      footer.querySelector(".total-pages").textContent = total;
+    });
+  });*/
 
   //Print the quilt section (see media query in css)
   associatedWindow.print();

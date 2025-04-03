@@ -40,7 +40,6 @@
 .hero-content h2 {
   font-size: 1.5em;
   color: white;
- 
 }
 
 .hero-content button {
@@ -56,10 +55,9 @@
   background-color: #c0392b;
 }
 
-
 body {
   background: linear-gradient(to right, #3498db, #2ecc71);
- 
+
   padding: 50px 20px;
   text-align: center;
 }
@@ -118,41 +116,37 @@ img {
   text-align: center;
 }
 
-
-#color-ranges  {
+#color-ranges {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   gap: 1em;
   justify-content: center;
-  
-  
 }
-*#celsius-color-ranges, #fahrenheit-color-ranges  {
+*#celsius-color-ranges,
+#fahrenheit-color-ranges {
   display: flex;
   flex-direction: column;
   align-items: center;
- 
 }
-
 
 .range {
   display: flex;
   align-items: center;
   margin-bottom: 0.25em;
- }
+}
 
 .range label {
-  margin-right: 1em; 
+  margin-right: 1em;
   text-align: right;
 }
 
 .range input[type="color"] {
-  margin: 0 .25em;
+  margin: 0 0.25em;
 }
 
 .range .temp-value {
-  margin-left: .25em;*/
+  margin-left: 0.25em;
   font-weight: bold;
 }
 
@@ -185,6 +179,10 @@ img {
 }
 
 @media print {
+  @page {
+    margin: 1in;
+    size: landscape;
+  }
   body {
     -webkit-print-color-adjust: exact; /* For WebKit-based browsers like Chrome */
     print-color-adjust: exact; /* For other modern browsers */
@@ -203,11 +201,15 @@ img {
     width: 100%; /* Removes fixed widths */
   }
 
-  @page {
-    margin: 0;
-    size: landscape;
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    border-top: 1px solid black;
   }
-
+  
   .quilt {
     display: grid;
     grid-template-columns: repeat(16, 165px); /* 16 blocks per row */
