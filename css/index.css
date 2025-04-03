@@ -116,6 +116,29 @@ img {
   text-align: center;
 }
 
+#resultsContainer {
+  margin-top: 20px;
+}
+
+.location-option {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.location-option:hover {
+  background-color: #e2e2e2;
+}
+
+.selected {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #007BFF;
+}
+
 #color-ranges {
   display: flex;
   flex-wrap: wrap;

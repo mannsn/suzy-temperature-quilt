@@ -227,6 +227,29 @@ function generateBlocks(
   }
 }
 //Form Section
+function displayResults(locations) {
+  const container = document.getElementById("resultsContainer");
+  container.innerHTML = ""; // Clear previous results
+
+  if (locations.length === 0) {
+      container.innerHTML = "<p>No locations found.</p>";
+      return;
+  }
+
+  locations.forEach(location => {
+      const div = document.createElement("div");
+      div.className = "location-option";
+      div.innerText = `${location.name} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
+      div.addEventListener("click", () => selectLocation(location));
+      container.appendChild(div);
+  });
+}
+
+function selectLocation(location) {
+  const selectedElement = document.getElementById("selectedLocation");
+  selectedElement.innerText = `Selected: ${location.name} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
+}
+
 function createRangeDiv(range, unit) {
   const rangeDiv = document.createElement("div");
   rangeDiv.classList.add("range");
@@ -443,6 +466,24 @@ function onPrtSubmit(event) {
 
 //Create the quilt form color ranges
 makeColorRangesForm();
+
+document.getElementById("locationForm").addEventListener("submit", async function(event) {
+  event.preventDefault(); // Prevent form reload
+
+  const locationInput = document.getElementById("locationInput").value;
+  const apiUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(locationInput)}&count=10&language=en&format=json`;
+
+  try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error("Failed to fetch location data");
+
+      const data = await response.json();
+      displayResults(data.results || []);
+  } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("resultsContainer").innerHTML = "<p>Could not retrieve locations. Please try again.</p>";
+  }
+});
 
 //Find the quilt form and add the callback for submit
 const messageForm = document.getElementById("quiltForm");
