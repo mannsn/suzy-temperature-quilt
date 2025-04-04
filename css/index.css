@@ -120,6 +120,12 @@ img {
   margin-top: 20px;
 }
 
+#color-ranges-section {
+  background-color: #c3c3cf;
+  text-align: center;
+}
+
+
 .location-option {
   padding: 8px;
   margin: 5px 0;

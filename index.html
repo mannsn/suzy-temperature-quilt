@@ -24,7 +24,7 @@
             weather patterns of your location.
           </p>
           <p>
-            Aassign specific colors to temperature ranges (e.g., blue for cold
+            Assign specific colors to temperature ranges (e.g., blue for cold
             days, red for hot days) and use these colors to create the blocks.
             The resulting design will have 24 rows by 16 columns. Using 3.5 inch
             blocks would result in a 48 inch wide by 72 inch long block design.
@@ -42,22 +42,27 @@
       </section>
 
       <section id="formSection" class="non-print-section">
-
         <div class="container">
           <h1>Search Location</h1>
-       
+
           <form id="locationForm">
-              <label for="locationInput">
-                Enter Location (city or zip code) and select from results<br> 
-                to populate latitude and longitude:<br>
-              </label>
-              <input type="text" id="locationInput" name="location" placeholder="e.g., Damascus" required>
-              <button type="submit">Search</button>
+            <label for="locationInput">
+              Enter Location (city or zip code) and select from results<br />
+              to populate latitude and longitude:<br />
+            </label>
+            <input
+              type="text"
+              id="locationInput"
+              name="location"
+              placeholder="e.g., Damascus"
+              required
+            />
+            <button type="submit">Search</button>
           </form>
           <div id="resultsContainer"></div>
           <p id="selectedLocation" class="selected"></p>
-      </div>
-      
+        </div>
+
         <form id="quiltForm" name="quiltForm" autocomplete="on">
           <label for="latitude">Enter a latitude </label>
           <input
@@ -127,23 +132,24 @@
           </label>
           <br />
 
-          <a href="#fahrenheit-color-ranges">Fahrenheit map color ranges</a>
+          <a href="#fahrenheit-color-ranges">Tailor the fahrenheit color ranges before generation.</a>
           <br />
-          <a href="#celsius-color-ranges">Celsius map color ranges</a>
+          <a href="#celsius-color-ranges">Tailor the celsius color ranges before generation.</a>
           <br />
 
           <button type="submit" class="submit-button">Generate Pattern</button>
-
-          <h1>Color Ranges</h1>
-          <div id="color-ranges">
-        
-          <div id="fahrenheit-color-ranges"></div>
-        
-          <div id="celsius-color-ranges"></div>
-        </div>
-          
-
      
+
+          <section id="color-ranges-section">
+            <h1>         
+              Color Ranges:  Note updates will not be saved upon refresh.
+            </h1>
+            <div id="color-ranges">
+              <div id="fahrenheit-color-ranges"></div>
+
+              <div id="celsius-color-ranges"></div>
+            </div>
+          </section>
         </form>
       </section>
     </section>
