@@ -97,7 +97,6 @@ function generateBlocks(
   let fullPath = window.location.href;
   let directoryPath = fullPath.substring(0, fullPath.lastIndexOf("/") + 1);
   console.log(directoryPath);
-  
 
   // Open a new window
   let newWindow = window.open("./generate.html", "_blank");
@@ -109,7 +108,7 @@ function generateBlocks(
   // Wait for the new window to load its content
   newWindow.onload = function () {
     console.log("adding to new html");
-
+    const newDoc = newWindow.document.getElementById("quiltsection");
     const quiltDiv = newWindow.document.createElement("div");
     quiltDiv.className = "quilt";
 
@@ -125,7 +124,7 @@ function generateBlocks(
     }
 
     // Append the quilt to the body or desired container
-    newWindow.document.body.appendChild(quiltDiv);
+    newDoc.appendChild(quiltDiv);
 
     const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
     console.log(tempBlocks);
@@ -217,15 +216,17 @@ function generateBlocks(
     });
 
     //Add a header for the quilt pattrn
-    const quiltTitle = newWindow.document.getElementById("quiltTitle");
-    console.log(quiltTitle);
+    const quiltTitles = newWindow.document.getElementsByClassName("quiltTitle");
+    console.log(quiltTitles);
 
     //Get the correct unit for the title
     let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
     let quiltHighOrLow =
       hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
 
-    quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
+    Array.from(quiltTitles).forEach((quiltTitle) => {
+      quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
+    });
 
     const print = newWindow.document.getElementById("prtForm");
     print.addEventListener("submit", onPrtSubmit);

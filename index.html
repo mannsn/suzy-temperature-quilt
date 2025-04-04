@@ -45,8 +45,12 @@
 
         <div class="container">
           <h1>Search Location</h1>
+       
           <form id="locationForm">
-              <label for="locationInput">Enter Location:</label>
+              <label for="locationInput">
+                Enter Location and select from results<br> 
+                to populate latitude and longitude:<br>
+              </label>
               <input type="text" id="locationInput" name="location" placeholder="e.g., Damascus" required>
               <button type="submit">Search</button>
           </form>
@@ -83,6 +87,7 @@
             name="year"
             id="yearId"
             required="true"
+            value="2020"
             min="2020"
             max="2024"
           />
@@ -105,10 +110,10 @@
 
           <label>
             <input type="radio" name="option1" value="1" id="High" checked />
-            High
+            High Temp
           </label>
           <label>
-            <input type="radio" name="option1" value="2" id="Low" /> Low
+            <input type="radio" name="option1" value="2" id="Low" /> Low Temp
           </label>
           <br />
 

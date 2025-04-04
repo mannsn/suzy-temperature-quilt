@@ -136,7 +136,7 @@ img {
 .selected {
   margin-top: 20px;
   font-weight: bold;
-  color: #007BFF;
+  color: #007bff;
 }
 
 #color-ranges {
@@ -203,7 +203,6 @@ img {
 
 @media print {
   @page {
-    margin: 1in;
     size: landscape;
   }
   body {
@@ -213,7 +212,7 @@ img {
     width: 100%;
     overflow: visible;
     zoom: 100%;
-    font: 1em;
+    font: 12px;
   }
 
   html,
@@ -232,12 +231,16 @@ img {
     font-size: 12px;
     border-top: 1px solid black;
   }
-  
+
   .quilt {
     display: grid;
-    grid-template-columns: repeat(16, 165px); /* 16 blocks per row */
+    grid-template-columns: repeat(16, 140px); /* 16 blocks per row */
     gap: 0; /* Space between blocks */
     max-width: 100%; /* Adjust the grid width */
+  }
+
+  .temp-block {
+    font: 12px;
   }
 
   .non-print-section {
