@@ -95,7 +95,7 @@ function generateBlocks(
   colorRangesCelsius
 ) {
   // Open a new window
-  const newWindow = window.open("/generate.html", "_blank");
+  const newWindow = window.open("./generate.html", "_blank");
 
   // Wait for the new window to load its content
   newWindow.onload = function () {
@@ -227,6 +227,24 @@ function generateBlocks(
   }
 }
 //Form Section
+async function getLocation(event) {
+  event.preventDefault(); // Prevent form reload
+
+  const locationInput = document.getElementById("locationInput").value;
+  const apiUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(locationInput)}&count=10&language=en&format=json`;
+
+  try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error("Failed to fetch location data");
+
+      const data = await response.json();
+      displayResults(data.results || []);
+  } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("resultsContainer").innerHTML = "<p>Could not retrieve locations. Please try again.</p>";
+  }
+}
+
 function displayResults(locations) {
   const container = document.getElementById("resultsContainer");
   container.innerHTML = ""; // Clear previous results
@@ -239,7 +257,7 @@ function displayResults(locations) {
   locations.forEach(location => {
       const div = document.createElement("div");
       div.className = "location-option";
-      div.innerText = `${location.name} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
+      div.innerText = `${location.name}, ${location.admin1} ${location.country_code} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
       div.addEventListener("click", () => selectLocation(location));
       container.appendChild(div);
   });
@@ -247,7 +265,11 @@ function displayResults(locations) {
 
 function selectLocation(location) {
   const selectedElement = document.getElementById("selectedLocation");
-  selectedElement.innerText = `Selected: ${location.name} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
+  //selectedElement.innerText = `Selected: ${location.name} (Lat: ${location.latitude}, Lon: ${location.longitude})`;
+ const latitude = document.getElementById("latitude");
+ latitude.value=location.latitude;
+ const longitude = document.getElementById("longitude");
+ longitude.value=location.longitude;
 }
 
 function createRangeDiv(range, unit) {
@@ -467,26 +489,10 @@ function onPrtSubmit(event) {
 //Create the quilt form color ranges
 makeColorRangesForm();
 
-document.getElementById("locationForm").addEventListener("submit", async function(event) {
-  event.preventDefault(); // Prevent form reload
+//Search for location
+document.getElementById("locationForm").addEventListener("submit", getLocation);
 
-  const locationInput = document.getElementById("locationInput").value;
-  const apiUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(locationInput)}&count=10&language=en&format=json`;
-
-  try {
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error("Failed to fetch location data");
-
-      const data = await response.json();
-      displayResults(data.results || []);
-  } catch (error) {
-      console.error("Error:", error);
-      document.getElementById("resultsContainer").innerHTML = "<p>Could not retrieve locations. Please try again.</p>";
-  }
-});
-
-//Find the quilt form and add the callback for submit
+//Find the quilt form and add the callback for submit to generate the quilt
 const messageForm = document.getElementById("quiltForm");
 console.log(messageForm);
-
 messageForm.addEventListener("submit", onFormSubmit);
