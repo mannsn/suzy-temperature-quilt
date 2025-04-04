@@ -323,7 +323,9 @@ function makeColorRangesForm() {
       { name: "Cool Green", value: "#32cd32", gt: 40 },
       { name: "Blue Mint", value: "#87ceeb", gt: 30 },
       { name: "Purple", value: "#800080", gt: 20 },
-      { name: "Gray", value: "#d0d0d0", gt: -20 },
+      { name: "Purple", value: "#800080", gt: 10 },
+      { name: "Purple", value: "#800080", gt: 0 },
+      { name: "Purple", value: "#800080", gt: -40 },
     ],
     celsius: [
       { name: "Harvest Red", value: "#c04040", gt: 50 },
@@ -335,7 +337,7 @@ function makeColorRangesForm() {
       { name: "Cool Green", value: "#32cd32", gt: 5 },
       { name: "Blue Mint", value: "#87ceeb", gt: 0 },
       { name: "Purple", value: "#800080", gt: -5 },
-      { name: "Gray", value: "#d0d0d0", gt: -10 },
+      { name: "Purple", value: "#800080", gt: -40 },
     ],
   };
 
@@ -377,7 +379,8 @@ function getColorRanges(containerId) {
     let value = range.querySelector('input[type="color"]').value;
     let name = range.querySelector('input[type="text"]').value;
     let gtString = range.querySelector(".temp-value").textContent.trim();
-    let gt = parseInt(gtString.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
+    let gt = parseInt(gtString.replace(/[^0-9\-]/g, ""), 10);
+
     colorRanges.push({
       name: name,
       value: value,
