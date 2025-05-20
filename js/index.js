@@ -122,37 +122,18 @@ function generateBlocks(
     const daysInMonthsLeapYear = [
       31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
     ];
+
     let dividedMonths = [];
     let yearTemps = [];
 
     if (filler === "yes") {
-      let padDays = 32;
-      //Divide temperature array into arrays by months
-      if (year === "2020") {
-        dividedMonths = divideDaysByMonths(
-          tempArray,
-          daysInMonthsLeapYear,
-          padDays
-        );
-      } else {
-        dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
-      }
+      const padDays = 32;
+      const daysInMonthsType =
+        year === "2020" ? daysInMonthsLeapYear : daysInMonths;
+      dividedMonths = divideDaysByMonths(tempArray, daysInMonthsType, padDays);
 
-      //Put months array back together with filler days added
-      yearTemps = [
-        ...dividedMonths[0],
-        ...dividedMonths[1],
-        ...dividedMonths[2],
-        ...dividedMonths[3],
-        ...dividedMonths[4],
-        ...dividedMonths[5],
-        ...dividedMonths[6],
-        ...dividedMonths[7],
-        ...dividedMonths[8],
-        ...dividedMonths[9],
-        ...dividedMonths[10],
-        ...dividedMonths[11],
-      ];
+      // Combine months array using spread syntax
+      yearTemps = dividedMonths.flat();
     } else {
       yearTemps = [...tempArray];
     }
