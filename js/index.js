@@ -14,7 +14,7 @@ async function weatherAPI(weatherURL) {
   }
 }
 
-//Once the data is returned, display resulting blocks
+//Generate the weather based on the inputs and create block design
 async function getWeatherAndGenerate(
   weatherURL,
   unit,
@@ -26,35 +26,23 @@ async function getWeatherAndGenerate(
   colorRangesFahrenheit,
   colorRangesCelsius
 ) {
-  //Get the temperature data
   const weather = await weatherAPI(weatherURL);
+  const temperatureData =
+    hiOrLow === "max"
+      ? weather.daily.temperature_2m_max
+      : weather.daily.temperature_2m_min;
 
-  //Determine if it was high or low weather temperature selected and generate blocks
-  if (hiOrLow === "max") {
-    generateBlocks(
-      weather.daily.temperature_2m_max,
-      unit,
-      year,
-      hiOrLow,
-      latitude,
-      longitude,
-      filler,
-      colorRangesFahrenheit,
-      colorRangesCelsius
-    );
-  } else {
-    generateBlocks(
-      weather.daily.temperature_2m_min,
-      unit,
-      year,
-      hiOrLow,
-      latitude,
-      longitude,
-      filler,
-      colorRangesFahrenheit,
-      colorRangesCelsius
-    );
-  }
+  generateBlocks(
+    temperatureData,
+    unit,
+    year,
+    hiOrLow,
+    latitude,
+    longitude,
+    filler,
+    colorRangesFahrenheit,
+    colorRangesCelsius
+  );
 }
 
 //Divide the temperatures by months to add filler days
@@ -401,34 +389,13 @@ function onFormSubmit(event) {
   const longitude = data.get("longitude");
   const year = data.get("year");
 
-  let unit = "fahrenheit";
-  const buttonVal = getSelectedValue("option"); //1 = Farenheit 2=Celcius
-  if (buttonVal === "1") {
-    unit = "fahrenheit";
-  } else {
-    unit = "celsius";
-  }
-
-  let hiOrLow = "max";
-  const buttonVal1 = getSelectedValue("option1"); //1 = High 2=Low
-  if (buttonVal1 === "1") {
-    hiOrLow = "max";
-  } else {
-    hiOrLow = "min";
-  }
-
-  let filler = "yes";
-  const buttonVal2 = getSelectedValue("option2"); //1 = Yes 2=No
-  if (buttonVal2 === "1") {
-    filler = "yes";
-  } else {
-    filler = "no";
-  }
+  const unit = getSelectedValue("option") === "1" ? "fahrenheit" : "celsius";
+  const hiOrLow = getSelectedValue("option1") === "1" ? "max" : "min";
+  const filler = getSelectedValue("option2") === "1" ? "yes" : "no";
 
   console.log(longitude);
   console.log(latitude);
   console.log(year);
-  console.log(buttonVal);
   console.log(unit);
   console.log(hiOrLow);
   console.log(filler);
