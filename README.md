@@ -6,6 +6,7 @@ This app will generate a block design for a temperature quilt/blanket based on t
 ```bash
 git clone https://github.com/mannsn/suzy-temperature-quilt.git
 run from a server (will not run locally due to generated pages)
+popups need to be allowed for generated block design page
 
 ###Usage
 Enter location to search and select result to populate longitude and latitude (alternately can enter latitude and longitude): This is used to search for temperatures.
