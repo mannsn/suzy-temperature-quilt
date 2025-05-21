@@ -88,122 +88,130 @@ function generateBlocks(
 
   // Open a new window
   let newWindow = window.open("./generate.html", "_blank");
-  if (newWindow === null) {
-    newWindow = window.open("file://generate.html", "_blank");
-  }
-  console.log("newWindow", newWindow);
 
-  // Wait for the new window to load its content
-  newWindow.onload = function () {
-    console.log("adding to new html");
-    const newDoc = newWindow.document.getElementById("quiltsection");
-    const quiltDiv = newWindow.document.createElement("div");
-    quiltDiv.className = "quilt";
+  // Handle cases where window opening is blocked
+  if (!newWindow) {
+    alert("Popup blocked! Please allow pop-ups for this site.");
+  } else {
+    console.log("newWindow", newWindow);
 
-    // Create 184 divs dynamically in the new window
-    for (let i = 1; i <= 384; i++) {
-      const div = newWindow.document.createElement("div");
-      div.className = "temp-block";
-      div.style.setProperty("--temp-color", "#6f6866ff");
-      div.title = "65°F";
+    // Wait for the new window to load its content
+    newWindow.onload = function () {
+      console.log("adding to new html");
+      const newDoc = newWindow.document.getElementById("quiltsection");
+      const quiltDiv = newWindow.document.createElement("div");
+      quiltDiv.className = "quilt";
 
-      // Append the div to the body of the new window
-      quiltDiv.appendChild(div);
-    }
+      // Create 184 divs dynamically in the new window
+      for (let i = 1; i <= 384; i++) {
+        const div = newWindow.document.createElement("div");
+        div.className = "temp-block";
+        div.style.setProperty("--temp-color", "#6f6866ff");
+        div.title = "65°F";
 
-    // Append the quilt to the body or desired container
-    newDoc.appendChild(quiltDiv);
-
-    const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
-    console.log(tempBlocks);
-    let degreeSymbol = "\u00B0";
-
-    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    const daysInMonthsLeapYear = [
-      31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-    ];
-
-    let dividedMonths = [];
-    let yearTemps = [];
-
-    if (filler === "yes") {
-      const padDays = 32;
-      const daysInMonthsType =
-        year === "2020" ? daysInMonthsLeapYear : daysInMonths;
-      dividedMonths = divideDaysByMonths(tempArray, daysInMonthsType, padDays);
-
-      // Combine months array using spread syntax
-      yearTemps = dividedMonths.flat();
-    } else {
-      yearTemps = [...tempArray];
-    }
-
-    //console.log("yearTemps", yearTemps);
-    let dayNumber = 1;
-
-    //For each block, find matching temperature and set color plus title
-    tempBlocks.forEach((block, index) => {
-      let colorRangeIndex = 99;
-      const temp = yearTemps[index];
-
-      //Set color ranges based on farenheit or celsius range depending on user selection
-      const colorRangesToCheck =
-        unit === "fahrenheit" ? colorRangesFahrenheit : colorRangesCelsius;
-
-      //Determine color based on temperature range
-      for (let i = 0; i < colorRangesToCheck.length; i++) {
-        if (temp > colorRangesToCheck[i].gt) {
-          colorRangeIndex = i;
-          break; // Exit the loop once the matching range is found
-        }
+        // Append the div to the body of the new window
+        quiltDiv.appendChild(div);
       }
 
-      // If no range matches, set the title attribute to "none"
-      if (colorRangeIndex === 99) {
-        block.setAttribute("title", "");
-        block.style.setProperty("--temp-color", "#d0d0d0");
+      // Append the quilt to the body or desired container
+      newDoc.appendChild(quiltDiv);
+
+      const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
+      console.log(tempBlocks);
+      let degreeSymbol = "\u00B0";
+
+      const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      const daysInMonthsLeapYear = [
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+      ];
+
+      let dividedMonths = [];
+      let yearTemps = [];
+
+      if (filler === "yes") {
+        const padDays = 32;
+        const daysInMonthsType =
+          year === "2020" ? daysInMonthsLeapYear : daysInMonths;
+        dividedMonths = divideDaysByMonths(
+          tempArray,
+          daysInMonthsType,
+          padDays
+        );
+
+        // Combine months array using spread syntax
+        yearTemps = dividedMonths.flat();
       } else {
-        //Set the color
-        block.style.setProperty(
-          "--temp-color",
-          `${colorRangesToCheck[colorRangeIndex].value}`
-        );
-
-        //Get the correct unit for the title
-        let titleUnit = unit === "fahrenheit" ? "F" : "C";
-        //Set the title
-
-        block.setAttribute(
-          "title",
-          `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRangesToCheck[colorRangeIndex].name}`
-        );
-        dayNumber = ++dayNumber;
+        yearTemps = [...tempArray];
       }
 
-      //Hide textcontent in case it was there from previous print
-      block.textContent = "";
-    });
+      //console.log("yearTemps", yearTemps);
+      let dayNumber = 1;
 
-    //Add a header for the quilt pattrn
-    const quiltTitles = newWindow.document.getElementsByClassName("quiltTitle");
-    console.log(quiltTitles);
+      //For each block, find matching temperature and set color plus title
+      tempBlocks.forEach((block, index) => {
+        let colorRangeIndex = 99;
+        const temp = yearTemps[index];
 
-    //Get the correct unit for the title
-    let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
-    let quiltHighOrLow =
-      hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
+        //Set color ranges based on farenheit or celsius range depending on user selection
+        const colorRangesToCheck =
+          unit === "fahrenheit" ? colorRangesFahrenheit : colorRangesCelsius;
 
-    Array.from(quiltTitles).forEach((quiltTitle) => {
-      quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
-    });
+        //Determine color based on temperature range
+        for (let i = 0; i < colorRangesToCheck.length; i++) {
+          if (temp > colorRangesToCheck[i].gt) {
+            colorRangeIndex = i;
+            break; // Exit the loop once the matching range is found
+          }
+        }
 
-    const print = newWindow.document.getElementById("prtForm");
-    print.addEventListener("submit", onPrtSubmit);
-  };
+        // If no range matches, set the title attribute to "none"
+        if (colorRangeIndex === 99) {
+          block.setAttribute("title", "");
+          block.style.setProperty("--temp-color", "#d0d0d0");
+        } else {
+          //Set the color
+          block.style.setProperty(
+            "--temp-color",
+            `${colorRangesToCheck[colorRangeIndex].value}`
+          );
 
-  if (newWindow && !newWindow.closed) {
-    console.log(newWindow.document.body.innerHTML);
-  }
+          //Get the correct unit for the title
+          let titleUnit = unit === "fahrenheit" ? "F" : "C";
+          //Set the title
+
+          block.setAttribute(
+            "title",
+            `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRangesToCheck[colorRangeIndex].name}`
+          );
+          dayNumber = ++dayNumber;
+        }
+
+        //Hide textcontent in case it was there from previous print
+        block.textContent = "";
+      });
+
+      //Add a header for the quilt pattrn
+      const quiltTitles =
+        newWindow.document.getElementsByClassName("quiltTitle");
+      console.log(quiltTitles);
+
+      //Get the correct unit for the title
+      let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+      let quiltHighOrLow =
+        hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
+
+      Array.from(quiltTitles).forEach((quiltTitle) => {
+        quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
+      });
+
+      const print = newWindow.document.getElementById("prtForm");
+      print.addEventListener("submit", onPrtSubmit);
+    };
+
+    if (newWindow && !newWindow.closed) {
+      console.log(newWindow.document.body.innerHTML);
+    }
+  } //else
 }
 //Form Section
 async function getLocation(event) {
