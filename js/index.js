@@ -14,7 +14,7 @@ async function weatherAPI(weatherURL) {
   }
 }
 
-//Once the data is returned, display resulting blocks
+//Generate the weather based on the inputs and create block design
 async function getWeatherAndGenerate(
   weatherURL,
   unit,
@@ -26,35 +26,23 @@ async function getWeatherAndGenerate(
   colorRangesFahrenheit,
   colorRangesCelsius
 ) {
-  //Get the temperature data
   const weather = await weatherAPI(weatherURL);
+  const temperatureData =
+    hiOrLow === "max"
+      ? weather.daily.temperature_2m_max
+      : weather.daily.temperature_2m_min;
 
-  //Determine if it was high or low weather temperature selected and generate blocks
-  if (hiOrLow === "max") {
-    generateBlocks(
-      weather.daily.temperature_2m_max,
-      unit,
-      year,
-      hiOrLow,
-      latitude,
-      longitude,
-      filler,
-      colorRangesFahrenheit,
-      colorRangesCelsius
-    );
-  } else {
-    generateBlocks(
-      weather.daily.temperature_2m_min,
-      unit,
-      year,
-      hiOrLow,
-      latitude,
-      longitude,
-      filler,
-      colorRangesFahrenheit,
-      colorRangesCelsius
-    );
-  }
+  generateBlocks(
+    temperatureData,
+    unit,
+    year,
+    hiOrLow,
+    latitude,
+    longitude,
+    filler,
+    colorRangesFahrenheit,
+    colorRangesCelsius
+  );
 }
 
 //Divide the temperatures by months to add filler days
@@ -100,141 +88,130 @@ function generateBlocks(
 
   // Open a new window
   let newWindow = window.open("./generate.html", "_blank");
-  if (newWindow === null) {
-    newWindow = window.open("file://generate.html", "_blank");
-  }
-  console.log("newWindow", newWindow);
 
-  // Wait for the new window to load its content
-  newWindow.onload = function () {
-    console.log("adding to new html");
-    const newDoc = newWindow.document.getElementById("quiltsection");
-    const quiltDiv = newWindow.document.createElement("div");
-    quiltDiv.className = "quilt";
+  // Handle cases where window opening is blocked
+  if (!newWindow) {
+    alert("Popup blocked! Please allow pop-ups for this site.");
+  } else {
+    console.log("newWindow", newWindow);
 
-    // Create 184 divs dynamically in the new window
-    for (let i = 1; i <= 384; i++) {
-      const div = newWindow.document.createElement("div");
-      div.className = "temp-block";
-      div.style.setProperty("--temp-color", "#6f6866ff");
-      div.title = "65°F";
+    // Wait for the new window to load its content
+    newWindow.onload = function () {
+      console.log("adding to new html");
+      const newDoc = newWindow.document.getElementById("quiltsection");
+      const quiltDiv = newWindow.document.createElement("div");
+      quiltDiv.className = "quilt";
 
-      // Append the div to the body of the new window
-      quiltDiv.appendChild(div);
-    }
+      // Create 184 divs dynamically in the new window
+      for (let i = 1; i <= 384; i++) {
+        const div = newWindow.document.createElement("div");
+        div.className = "temp-block";
+        div.style.setProperty("--temp-color", "#6f6866ff");
+        div.title = "65°F";
 
-    // Append the quilt to the body or desired container
-    newDoc.appendChild(quiltDiv);
+        // Append the div to the body of the new window
+        quiltDiv.appendChild(div);
+      }
 
-    const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
-    console.log(tempBlocks);
-    let degreeSymbol = "\u00B0";
+      // Append the quilt to the body or desired container
+      newDoc.appendChild(quiltDiv);
 
-    const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    const daysInMonthsLeapYear = [
-      31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-    ];
-    let dividedMonths = [];
-    let yearTemps = [];
+      const tempBlocks = newWindow.document.querySelectorAll(".temp-block");
+      console.log(tempBlocks);
+      let degreeSymbol = "\u00B0";
 
-    if (filler === "yes") {
-      let padDays = 32;
-      //Divide temperature array into arrays by months
-      if (year === "2020") {
+      const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      const daysInMonthsLeapYear = [
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+      ];
+
+      let dividedMonths = [];
+      let yearTemps = [];
+
+      if (filler === "yes") {
+        const padDays = 32;
+        const daysInMonthsType =
+          year === "2020" ? daysInMonthsLeapYear : daysInMonths;
         dividedMonths = divideDaysByMonths(
           tempArray,
-          daysInMonthsLeapYear,
+          daysInMonthsType,
           padDays
         );
+
+        // Combine months array using spread syntax
+        yearTemps = dividedMonths.flat();
       } else {
-        dividedMonths = divideDaysByMonths(tempArray, daysInMonths, padDays);
+        yearTemps = [...tempArray];
       }
 
-      //Put months array back together with filler days added
-      yearTemps = [
-        ...dividedMonths[0],
-        ...dividedMonths[1],
-        ...dividedMonths[2],
-        ...dividedMonths[3],
-        ...dividedMonths[4],
-        ...dividedMonths[5],
-        ...dividedMonths[6],
-        ...dividedMonths[7],
-        ...dividedMonths[8],
-        ...dividedMonths[9],
-        ...dividedMonths[10],
-        ...dividedMonths[11],
-      ];
-    } else {
-      yearTemps = [...tempArray];
-    }
+      //console.log("yearTemps", yearTemps);
+      let dayNumber = 1;
 
-    //console.log("yearTemps", yearTemps);
-    let dayNumber = 1;
+      //For each block, find matching temperature and set color plus title
+      tempBlocks.forEach((block, index) => {
+        let colorRangeIndex = 99;
+        const temp = yearTemps[index];
 
-    //For each block, find matching temperature and set color plus title
-    tempBlocks.forEach((block, index) => {
-      let colorRangeIndex = 99;
-      const temp = yearTemps[index];
+        //Set color ranges based on farenheit or celsius range depending on user selection
+        const colorRangesToCheck =
+          unit === "fahrenheit" ? colorRangesFahrenheit : colorRangesCelsius;
 
-      //Set color ranges based on farenheit or celsius range depending on user selection
-      const colorRangesToCheck =
-        unit === "fahrenheit" ? colorRangesFahrenheit : colorRangesCelsius;
-
-      //Determine color based on temperature range
-      for (let i = 0; i < colorRangesToCheck.length; i++) {
-        if (temp > colorRangesToCheck[i].gt) {
-          colorRangeIndex = i;
-          break; // Exit the loop once the matching range is found
+        //Determine color based on temperature range
+        for (let i = 0; i < colorRangesToCheck.length; i++) {
+          if (temp > colorRangesToCheck[i].gt) {
+            colorRangeIndex = i;
+            break; // Exit the loop once the matching range is found
+          }
         }
-      }
 
-      // If no range matches, set the title attribute to "none"
-      if (colorRangeIndex === 99) {
-        block.setAttribute("title", "");
-        block.style.setProperty("--temp-color", "#d0d0d0");
-      } else {
-        //Set the color
-        block.style.setProperty(
-          "--temp-color",
-          `${colorRangesToCheck[colorRangeIndex].value}`
-        );
+        // If no range matches, set the title attribute to "none"
+        if (colorRangeIndex === 99) {
+          block.setAttribute("title", "");
+          block.style.setProperty("--temp-color", "#d0d0d0");
+        } else {
+          //Set the color
+          block.style.setProperty(
+            "--temp-color",
+            `${colorRangesToCheck[colorRangeIndex].value}`
+          );
 
-        //Get the correct unit for the title
-        let titleUnit = unit === "fahrenheit" ? "F" : "C";
-        //Set the title
+          //Get the correct unit for the title
+          let titleUnit = unit === "fahrenheit" ? "F" : "C";
+          //Set the title
 
-        block.setAttribute(
-          "title",
-          `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRangesToCheck[colorRangeIndex].name}`
-        );
-        dayNumber = ++dayNumber;
-      }
+          block.setAttribute(
+            "title",
+            `#${dayNumber}\n${temp}${degreeSymbol}${titleUnit}\n${colorRangesToCheck[colorRangeIndex].name}`
+          );
+          dayNumber = ++dayNumber;
+        }
 
-      //Hide textcontent in case it was there from previous print
-      block.textContent = "";
-    });
+        //Hide textcontent in case it was there from previous print
+        block.textContent = "";
+      });
 
-    //Add a header for the quilt pattrn
-    const quiltTitles = newWindow.document.getElementsByClassName("quiltTitle");
-    console.log(quiltTitles);
+      //Add a header for the quilt pattrn
+      const quiltTitles =
+        newWindow.document.getElementsByClassName("quiltTitle");
+      console.log(quiltTitles);
 
-    //Get the correct unit for the title
-    let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
-    let quiltHighOrLow =
-      hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
+      //Get the correct unit for the title
+      let quiltUnit = unit === "fahrenheit" ? "Fahrenheit" : "Celsius";
+      let quiltHighOrLow =
+        hiOrLow === "max" ? "High Temperatures" : "Low Temperatures";
 
-    Array.from(quiltTitles).forEach((quiltTitle) => {
-      quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
-    });
+      Array.from(quiltTitles).forEach((quiltTitle) => {
+        quiltTitle.textContent = `Quilt Pattern ${year} \n Location: ${latitude} ${longitude} \n ${quiltHighOrLow} \n ${quiltUnit}`;
+      });
 
-    const print = newWindow.document.getElementById("prtForm");
-    print.addEventListener("submit", onPrtSubmit);
-  };
+      const print = newWindow.document.getElementById("prtForm");
+      print.addEventListener("submit", onPrtSubmit);
+    };
 
-  if (newWindow && !newWindow.closed) {
-    console.log(newWindow.document.body.innerHTML);
-  }
+    if (newWindow && !newWindow.closed) {
+      console.log(newWindow.document.body.innerHTML);
+    }
+  } //else
 }
 //Form Section
 async function getLocation(event) {
@@ -401,34 +378,13 @@ function onFormSubmit(event) {
   const longitude = data.get("longitude");
   const year = data.get("year");
 
-  let unit = "fahrenheit";
-  const buttonVal = getSelectedValue("option"); //1 = Farenheit 2=Celcius
-  if (buttonVal === "1") {
-    unit = "fahrenheit";
-  } else {
-    unit = "celsius";
-  }
-
-  let hiOrLow = "max";
-  const buttonVal1 = getSelectedValue("option1"); //1 = High 2=Low
-  if (buttonVal1 === "1") {
-    hiOrLow = "max";
-  } else {
-    hiOrLow = "min";
-  }
-
-  let filler = "yes";
-  const buttonVal2 = getSelectedValue("option2"); //1 = Yes 2=No
-  if (buttonVal2 === "1") {
-    filler = "yes";
-  } else {
-    filler = "no";
-  }
+  const unit = getSelectedValue("option") === "1" ? "fahrenheit" : "celsius";
+  const hiOrLow = getSelectedValue("option1") === "1" ? "max" : "min";
+  const filler = getSelectedValue("option2") === "1" ? "yes" : "no";
 
   console.log(longitude);
   console.log(latitude);
   console.log(year);
-  console.log(buttonVal);
   console.log(unit);
   console.log(hiOrLow);
   console.log(filler);
