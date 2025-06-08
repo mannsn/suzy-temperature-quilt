@@ -4,13 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Temperature Quilt</title>
+    <link rel="icon" type="image/png" href="img/favicon.png" />
     <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
     <section id="container">
       <section class="hero">
+            <p>
+              <img
+                src="img/favicon.png"
+                alt="Temperature quilt icon"
+                class="center_pic"
+                id="temp-icon-id"
+              />
+            </p>
         <div class="hero-content">
-          <h1>Welcome to Temperature Quilt Design</h1>
+          <div class="temp-title">
+           
+            <h1>Welcome to Temperature Quilt Design</h1>
+          </div>
           <h2>
             Easily map yearly temperatures to temperature ranges and colors for
             your temperature quilt.
@@ -35,7 +47,7 @@
               src="img/tempsquares.jpg"
               alt="Temperature crochet blocks"
               class="center_pic"
-              id="profile-picture"
+              id="tempsqures-id"
             />
           </p>
         </div>
@@ -132,18 +144,19 @@
           </label>
           <br />
 
-          <a href="#fahrenheit-color-ranges">Tailor the fahrenheit color ranges before generation.</a>
+          <a href="#fahrenheit-color-ranges"
+            >Tailor the fahrenheit color ranges before generation.</a
+          >
           <br />
-          <a href="#celsius-color-ranges">Tailor the celsius color ranges before generation.</a>
+          <a href="#celsius-color-ranges"
+            >Tailor the celsius color ranges before generation.</a
+          >
           <br />
 
           <button type="submit" class="submit-button">Generate Pattern</button>
-     
 
           <section id="color-ranges-section">
-            <h1>         
-              Color Ranges:  Note updates will not be saved upon refresh.
-            </h1>
+            <h1>Color Ranges: Note updates will not be saved upon refresh.</h1>
             <div id="color-ranges">
               <div id="fahrenheit-color-ranges"></div>
 
