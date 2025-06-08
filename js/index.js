@@ -11,6 +11,7 @@ async function weatherAPI(weatherURL) {
     return data;
   } catch (error) {
     console.error("ERROR", error);
+    alert("Could not fetch data - check for internet connection");
   }
 }
 
