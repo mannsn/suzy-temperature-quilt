@@ -25,7 +25,7 @@
           </div>
           <h2>
             Easily map yearly temperatures to temperature ranges and colors for
-            your temperature quilt.
+            your temperature quilt. The years are limited to the available historical temperature data from https://historical-forecast-api.open-meteo.com/
           </h2>
           <p>
             A temperature quilt is a creative and colorful way to document daily
@@ -93,20 +93,20 @@
             name="longitude"
             id="longitude"
             required="true"
-            min="-90"
-            max="90"
+            min="-180"
+            max="180"
             step="0.00001"
           />
           <br />
-          <label for="year">Year (2020-2024)</label>
+          <label for="year">Year (2018-2025)</label>
           <input
             type="number"
             name="year"
             id="yearId"
             required="true"
             value="2020"
-            min="2020"
-            max="2024"
+            min="2018"
+            max="2025"
           />
           <br />
 
